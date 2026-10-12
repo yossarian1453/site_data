@@ -1,5 +1,6 @@
 {
   "scale": "two-party Democratic vote share (%); pvi positive = Democratic",
+  "pvi_baseline": "national",
   "texas_pvi_vs_nation": -5.92,
   "national": [
     {

@@ -7,8 +7,9 @@
  *                                       reference results
  *
  * Model (uniform swing on two-party Democratic vote share, in %):
- *   projected D share = district PVI + Texas D share
- *   National mode:      Texas D share = national D share + Texas PVI vs. nation
+ *   District PVI is measured against the nation (Cook's method).
+ *   projected D share = district PVI + national D share
+ *   national D share  = Texas D share - Texas PVI vs. nation   (Texas-vote mode)
  */
 (() => {
   "use strict";
@@ -286,7 +287,7 @@
   // ---------------------------------------------------------------- update
   function projected(f) {
     const p = f.properties.pvi;
-    return p == null ? null : clamp(p + state.T, 0, 100);
+    return p == null ? null : clamp(p + state.T - txLean(), 0, 100);   // PVI + national D share
   }
 
   function update() {
@@ -357,7 +358,7 @@
     $("#readout").innerHTML = share(v);
     $("#readoutSub").textContent = state.mode === "national"
       ? `Texas runs ${pviLabel(txLean())} vs. the nation → Texas D ${f1(state.T)}% · R ${f1(100 - state.T)}%`
-      : `Equivalent national environment: ${pviLabel(state.T - txLean() - 50)} (Texas is ${pviLabel(txLean())})`;
+      : `Equivalent national environment: ${pviLabel(state.T - txLean() - 50)}`;
     document.querySelectorAll(".chip").forEach(b =>
       b.setAttribute("aria-pressed", String(Math.abs(+b.dataset.value - v) < 0.05)));
   }
@@ -438,11 +439,13 @@
     const races = params.pvi_races.map(r => `${Math.round(r.weight * 100)}% ${r.year}`).join(" + ");
     $("#method").innerHTML =
       `<p><b>How it works.</b> Each district's PVI blends the two-party presidential vote (${races}) and is measured
-       against Texas as a whole. The projection moves every district by the same amount as the state:
-       projected Democratic share = PVI + the statewide Democratic share. National mode converts the national vote to
-       a Texas vote using Texas's own lean (${pviLabel(txLean())}). Districts are sorted in the table from closest to safest.</p>
+       against the nation as a whole, the same way the Cook Political Report calculates PVI for congressional districts.
+       The projection moves every district by the same amount as the national environment:
+       projected Democratic share = PVI + the national Democratic share. Texas mode converts a statewide vote to a
+       national one using Texas's own PVI (${pviLabel(txLean())}). Districts are sorted in the table from closest to safest.</p>
        <p>This is a uniform-swing illustration, not a forecast: it ignores candidates, incumbency, turnout differences
-       and uncontested races. Sources: Texas Legislative Council election data (2020, 2024); national totals from the FEC.</p>`;
+       and uncontested races. Sources: <a href="https://data.capitol.texas.gov/dataset/comprehensive-election-datasets-compressed-format" target="_blank" rel="noopener">Texas Legislative Council election data</a> (2020, 2024);
+       national totals from the <a href="https://www.fec.gov/introduction-campaign-finance/election-results-and-voting-information/" target="_blank" rel="noopener">FEC</a>.</p>`;
   }
 
   // ---------------------------------------------------------------- iframe sizing
