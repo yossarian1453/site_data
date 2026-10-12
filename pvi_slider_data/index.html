@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Texas Legislature Swingometer</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #fcfcfb;
+    --panel: #f3f2ee;
+    --ink: #1d1d1b;
+    --ink-2: #4a4a46;
+    --ink-3: #75746e;
+    --rule: #dcdad3;
+    --focus: #1b3b8c;
+    --d: #1b3b8c;
+    --r: #8a1320;
+    --thumb: 22px;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body { padding: 16px; }
+  .swing { max-width: 980px; margin: 0 auto; }
+
+  h1 { font-size: 1.35rem; line-height: 1.2; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .dek { margin: 0 0 16px; color: var(--ink-2); font-size: 0.95rem; line-height: 1.45; }
+
+  /* controls */
+  .controls { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-bottom: 16px; }
+  .seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; background: #fff; }
+  .seg button {
+    font: inherit; font-size: 0.875rem; padding: 7px 12px; border: 0; background: transparent;
+    color: var(--ink-2); cursor: pointer;
+  }
+  .seg button + button { border-left: 1px solid var(--rule); }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+  .seg button:focus-visible, .chip:focus-visible, select:focus-visible, .zoom button:focus-visible,
+  .bar button:focus-visible, input[type=range]:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--focus); outline-offset: 2px;
+  }
+
+  /* tally */
+  .tally-head { display: flex; justify-content: space-between; align-items: baseline; font-weight: 700; }
+  .tally-head .d { color: var(--d); }
+  .tally-head .r { color: var(--r); }
+  .tally-head .name { font-size: 1.05rem; }
+  .tally-head .num { font-size: 1.6rem; font-variant-numeric: tabular-nums; margin: 0 6px; }
+  .bar-wrap { position: relative; padding: 9px 0; }
+  .bar { display: flex; gap: 2px; height: 40px; }
+  .bar button {
+    font: inherit; font-size: 0.95rem; font-weight: 600; font-variant-numeric: tabular-nums;
+    border: 0; padding: 0; min-width: 0; cursor: pointer; transition: flex-grow 120ms ease-out;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .bar button:first-child { border-radius: 4px 0 0 4px; }
+  .bar button:last-child { border-radius: 0 4px 4px 0; }
+  .marker { position: absolute; left: 50%; top: 0; bottom: 0; width: 0; pointer-events: none; }
+  .marker::before, .marker::after {
+    content: ""; position: absolute; left: -7px; border: 7px solid transparent;
+  }
+  .marker::before { top: 0; border-top: 8px solid var(--ink); border-bottom: 0; }
+  .marker::after { bottom: 0; border-bottom: 8px solid var(--ink); border-top: 0; }
+  .marker span { position: absolute; top: 8px; bottom: 8px; left: -1px; border-left: 2px solid var(--ink); }
+  .tally-note { margin: 4px 0 0; font-size: 0.875rem; color: var(--ink-2); text-align: center; }
+  .tally-note b { color: var(--ink); }
+  .nw { white-space: nowrap; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; justify-content: center; margin: 8px 0 0; padding: 0; list-style: none; font-size: 0.8rem; color: var(--ink-2); }
+  .legend li { display: flex; align-items: center; gap: 6px; }
+  .sw { width: 12px; height: 12px; border-radius: 3px; flex: none; }
+
+  /* slider */
+  .vote { margin: 22px 0 12px; padding: 14px 16px 12px; background: var(--panel); border-radius: 10px; }
+  .vote-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; }
+  .vote label { font-weight: 600; font-size: 0.95rem; }
+  .readout { font-variant-numeric: tabular-nums; font-size: 1.05rem; font-weight: 700; }
+  .readout .d { color: var(--d); } .readout .r { color: var(--r); }
+  .readout-sub { font-size: 0.85rem; color: var(--ink-2); margin-top: 2px; min-height: 1.2em; }
+  .range-wrap { position: relative; margin: 10px 0 4px; }
+  input[type=range] {
+    -webkit-appearance: none; appearance: none; width: 100%; height: var(--thumb); margin: 0; background: transparent; cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-runnable-track { height: 8px; border-radius: 4px; background: linear-gradient(90deg, #8a1320, #eb8088 45%, #cdc8bc 50%, #86a6ea 55%, #1b3b8c); }
+  input[type=range]::-moz-range-track { height: 8px; border-radius: 4px; background: linear-gradient(90deg, #8a1320, #eb8088 45%, #cdc8bc 50%, #86a6ea 55%, #1b3b8c); }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: var(--thumb); height: var(--thumb); margin-top: calc((8px - var(--thumb)) / 2);
+    border-radius: 50%; background: #fff; border: 2px solid var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.25);
+  }
+  input[type=range]::-moz-range-thumb { width: var(--thumb); height: var(--thumb); border-radius: 50%; background: #fff; border: 2px solid var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+  .ticks { position: relative; height: 10px; }
+  .ticks i { position: absolute; top: 0; width: 2px; height: 8px; margin-left: -1px; background: var(--ink-3); border-radius: 1px; }
+  .ticks i.mid { background: var(--ink); height: 10px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .chip {
+    font: inherit; font-size: 0.78rem; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--rule);
+    background: #fff; color: var(--ink-2); cursor: pointer; font-variant-numeric: tabular-nums;
+  }
+  .chip[aria-pressed="true"] { border-color: var(--ink); color: var(--ink); font-weight: 600; }
+
+  /* map */
+  .map-wrap { position: relative; border: 1px solid var(--rule); border-radius: 10px; background: #fff; overflow: hidden; }
+  .map-tools { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; gap: 8px; pointer-events: none; z-index: 2; }
+  .map-tools > * { pointer-events: auto; }
+  select { font: inherit; font-size: 0.875rem; padding: 6px 8px; border: 1px solid var(--rule); border-radius: 8px; background: #fff; color: var(--ink); }
+  .zoom { display: flex; gap: 4px; }
+  .zoom button { font: inherit; font-size: 1rem; line-height: 1; width: 34px; height: 34px; border: 1px solid var(--rule); border-radius: 8px; background: #fff; color: var(--ink); cursor: pointer; }
+  .zoom button.reset { width: auto; padding: 0 10px; font-size: 0.82rem; }
+  svg#map { display: block; width: 100%; height: auto; }
+  .district { stroke: #fff; stroke-width: 0.6px; vector-effect: non-scaling-stroke; transition: fill 120ms linear, opacity 120ms linear; cursor: pointer; }
+  .district.dim { opacity: 0.18; }
+  .district.hover { stroke: var(--ink); stroke-width: 2px; }
+  .outline { fill: none; stroke: #6b6a64; stroke-width: 1px; vector-effect: non-scaling-stroke; pointer-events: none; }
+  .hint { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); background: rgba(29,29,27,.85); color: #fff; font-size: 0.82rem; padding: 6px 10px; border-radius: 6px; opacity: 0; transition: opacity 200ms; pointer-events: none; }
+  .hint.show { opacity: 1; }
+  .gradient-key { display: none; margin: 8px auto 0; max-width: 360px; font-size: 0.78rem; color: var(--ink-2); }
+  .gradient-key.show { display: block; }
+  .gradient-key .ramp { height: 10px; border-radius: 3px; }
+  .gradient-key .ends { display: flex; justify-content: space-between; margin-top: 3px; font-variant-numeric: tabular-nums; }
+
+  /* tooltip */
+  .tip {
+    position: fixed; z-index: 10; pointer-events: none; min-width: 210px; max-width: 280px;
+    background: #fff; border: 1px solid var(--rule); border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,.14);
+    padding: 10px 12px; font-size: 0.85rem; line-height: 1.4; display: none;
+  }
+  .tip h3 { margin: 0 0 6px; font-size: 0.95rem; }
+  .tip .row { display: flex; justify-content: space-between; gap: 12px; }
+  .tip .row span:first-child { color: var(--ink-2); }
+  .tip .row span:last-child { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .tip .rating { display: flex; align-items: center; gap: 6px; margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--rule); font-weight: 600; }
+
+  /* table */
+  details { margin-top: 16px; }
+  summary { cursor: pointer; font-weight: 600; font-size: 0.95rem; }
+  .table-scroll { max-height: 420px; overflow: auto; margin-top: 8px; border: 1px solid var(--rule); border-radius: 8px; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+  th, td { padding: 6px 10px; text-align: right; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+  th:first-child, td:first-child, th:last-child, td:last-child { text-align: left; }
+  thead th { position: sticky; top: 0; background: var(--panel); font-weight: 600; }
+  td .sw { display: inline-block; vertical-align: -1px; margin-right: 6px; }
+
+  footer { margin-top: 18px; font-size: 0.8rem; line-height: 1.5; color: var(--ink-3); }
+  footer p { margin: 0 0 6px; }
+  .error { padding: 16px; border: 1px solid #cc3a47; border-radius: 8px; color: #8a1320; background: #fff; }
+
+  @media (max-width: 560px) {
+    body { padding: 10px; }
+    .tally-head .name { font-size: 0.9rem; }
+    .tally-head .num { font-size: 1.3rem; margin: 0 4px; }
+    .bar { height: 34px; }
+    .map-tools { flex-direction: column; align-items: flex-start; }
+  }
+  @media (forced-colors: active) {
+    .bar button, .district { forced-color-adjust: none; }
+  }
+</style>
+</head>
+<body>
+<main class="swing" id="app">
+  <h1>Texas Legislature swingometer</h1>
+  <p class="dek">Slide the statewide vote and see how each district would line up if every district moved by the same amount.
+    Districts are colored by their projected result; the bar counts seats by rating.</p>
+
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Chamber">
+      <button type="button" data-chamber="house" aria-pressed="true">State House</button>
+      <button type="button" data-chamber="senate" aria-pressed="false">State Senate</button>
+    </div>
+    <div class="seg" role="group" aria-label="Slider measures">
+      <button type="button" data-mode="texas" aria-pressed="true">Texas vote</button>
+      <button type="button" data-mode="national" aria-pressed="false">National vote</button>
+    </div>
+    <div class="seg" role="group" aria-label="Map coloring">
+      <button type="button" data-color="ratings" aria-pressed="true">Ratings</button>
+      <button type="button" data-color="gradient" aria-pressed="false">Gradient</button>
+    </div>
+  </div>
+
+  <section class="tally" aria-live="polite">
+    <div class="tally-head">
+      <span class="d"><span class="name">Democrats</span><span class="num" id="dTotal">–</span></span>
+      <span class="r"><span class="num" id="rTotal">–</span><span class="name">Republicans</span></span>
+    </div>
+    <div class="bar-wrap">
+      <div class="bar" id="bar"></div>
+      <div class="marker" aria-hidden="true"><span></span></div>
+    </div>
+    <p class="tally-note" id="tallyNote"></p>
+    <ul class="legend" id="legend"></ul>
+  </section>
+
+  <section class="vote">
+    <div class="vote-top">
+      <label for="vote" id="voteLabel">Texas two-party vote</label>
+      <div class="readout" id="readout"></div>
+    </div>
+    <div class="readout-sub" id="readoutSub"></div>
+    <div class="range-wrap">
+      <input type="range" id="vote" step="0.1">
+      <div class="ticks" id="ticks" aria-hidden="true"></div>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Past results"></div>
+  </section>
+
+  <div class="map-wrap">
+    <div class="map-tools">
+      <select id="metro" aria-label="Zoom to area"></select>
+      <div class="zoom">
+        <button type="button" id="zoomIn" aria-label="Zoom in">+</button>
+        <button type="button" id="zoomOut" aria-label="Zoom out">−</button>
+        <button type="button" class="reset" id="zoomReset">Full map</button>
+      </div>
+    </div>
+    <svg id="map" role="img" aria-label="Map of districts colored by projected result"></svg>
+    <div class="hint" id="hint">Hold Ctrl (⌘ on Mac) and scroll to zoom</div>
+  </div>
+  <div class="gradient-key" id="gradientKey">
+    <div class="ramp" id="ramp"></div>
+    <div class="ends"><span>R 65%+</span><span>50–50</span><span>D 65%+</span></div>
+  </div>
+
+  <details id="tableWrap">
+    <summary>All districts as a table</summary>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>District</th><th>PVI</th><th id="thActual">2024 pres. D</th><th>Proj. D</th><th>Proj. R</th><th>Rating</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </details>
+
+  <footer id="method"></footer>
+</main>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
