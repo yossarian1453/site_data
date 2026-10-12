@@ -359,8 +359,10 @@
     const n = clamp(state.T - txLean(), 0, 100);
     $("#readoutNational").innerHTML = share(n);
     $("#readoutTexas").innerHTML = share(state.T);
+    const m = 2 * n - 100;   // national two-party margin, points (D minus R)
+    const marginText = Math.abs(m) < 0.05 ? "Tied" : `${m > 0 ? "D" : "R"}+${f1(Math.abs(m))}%`;
     $("#readoutSub").textContent =
-      `${state.mode === "texas" ? "Equivalent national environment" : "National environment"}: ${pviLabel(n - 50)}`;
+      `${state.mode === "texas" ? "Equivalent national popular vote margin" : "National popular vote margin"}: ${marginText}`;
     document.querySelectorAll(".chip").forEach(b =>
       b.setAttribute("aria-pressed", String(Math.abs(+b.dataset.value - v) < 0.05)));
   }
