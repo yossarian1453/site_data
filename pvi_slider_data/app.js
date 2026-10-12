@@ -357,7 +357,7 @@
     $("#readout").innerHTML = share(v);
     $("#readoutSub").textContent = state.mode === "national"
       ? `Texas runs ${pviLabel(txLean())} vs. the nation → Texas D ${f1(state.T)}% · R ${f1(100 - state.T)}%`
-      : `Equivalent national vote: D ${f1(state.T - txLean())}% (Texas is ${pviLabel(txLean())})`;
+      : `Equivalent national environment: ${pviLabel(state.T - txLean() - 50)} (Texas is ${pviLabel(txLean())})`;
     document.querySelectorAll(".chip").forEach(b =>
       b.setAttribute("aria-pressed", String(Math.abs(+b.dataset.value - v) < 0.05)));
   }
