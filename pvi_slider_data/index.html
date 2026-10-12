@@ -73,7 +73,8 @@
   /* slider */
   .vote { margin: 22px 0 12px; padding: 14px 16px 12px; background: var(--panel); border-radius: 10px; }
   .vote-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; }
-  .vote label { font-weight: 600; font-size: 0.95rem; }
+  .vote-label { font-weight: 600; font-size: 0.95rem; }
+  .vote-top + .vote-top { margin-top: 4px; }
   .readout { font-variant-numeric: tabular-nums; font-size: 1.05rem; font-weight: 700; }
   .readout .d { color: var(--d); } .readout .r { color: var(--r); }
   .readout-sub { font-size: 0.85rem; color: var(--ink-2); margin-top: 2px; min-height: 1.2em; }
@@ -192,8 +193,12 @@
 
   <section class="vote">
     <div class="vote-top">
-      <label for="vote" id="voteLabel">Texas two-party vote</label>
-      <div class="readout" id="readout"></div>
+      <span class="vote-label">National two-party vote</span>
+      <div class="readout" id="readoutNational"></div>
+    </div>
+    <div class="vote-top">
+      <span class="vote-label">Texas two-party vote</span>
+      <div class="readout" id="readoutTexas"></div>
     </div>
     <div class="readout-sub" id="readoutSub"></div>
     <div class="range-wrap">

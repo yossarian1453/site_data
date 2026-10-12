@@ -189,7 +189,8 @@
     input.min = lo;
     input.max = hi;
     input.value = clamp(sliderValue(), lo, hi);
-    $("#voteLabel").textContent = state.mode === "texas" ? "Texas two-party vote" : "National two-party vote";
+    input.setAttribute("aria-label", state.mode === "texas"
+      ? "Texas two-party Democratic vote share (%)" : "National two-party Democratic vote share (%)");
 
     const pos = v => `calc(${(v - lo) / (hi - lo)} * (100% - var(--thumb)) + var(--thumb) / 2)`;
     const refs = references().filter(r => r.value >= lo && r.value <= hi);
@@ -354,11 +355,12 @@
 
   function renderReadout() {
     const v = sliderValue();
-    const share = (d, label) => `<span class="d">D ${f1(d)}%</span> · <span class="r">R ${f1(100 - d)}%</span>`;
-    $("#readout").innerHTML = share(v);
-    $("#readoutSub").textContent = state.mode === "national"
-      ? `Texas runs ${pviLabel(txLean())} vs. the nation → Texas D ${f1(state.T)}% · R ${f1(100 - state.T)}%`
-      : `Equivalent national environment: ${pviLabel(state.T - txLean() - 50)}`;
+    const share = d => `<span class="d">D ${f1(d)}%</span> · <span class="r">R ${f1(100 - d)}%</span>`;
+    const n = clamp(state.T - txLean(), 0, 100);
+    $("#readoutNational").innerHTML = share(n);
+    $("#readoutTexas").innerHTML = share(state.T);
+    $("#readoutSub").textContent =
+      `${state.mode === "texas" ? "Equivalent national environment" : "National environment"}: ${pviLabel(n - 50)}`;
     document.querySelectorAll(".chip").forEach(b =>
       b.setAttribute("aria-pressed", String(Math.abs(+b.dataset.value - v) < 0.05)));
   }
