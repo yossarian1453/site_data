@@ -1,0 +1,98 @@
+{
+  "scale": "two-party Democratic vote share (%); pvi positive = Democratic",
+  "texas_pvi_vs_nation": -5.92,
+  "national": [
+    {
+      "office": "president",
+      "year": 2024,
+      "dem": 75017613,
+      "gop": 77302580,
+      "dshare": 49.25
+    },
+    {
+      "office": "president",
+      "year": 2020,
+      "dem": 81283501,
+      "gop": 74223975,
+      "dshare": 52.27
+    }
+  ],
+  "national_source": "FEC, Federal Elections 2020 and 2024 (certified results)",
+  "pvi_races": [
+    {
+      "office": "president",
+      "year": 2024,
+      "weight": 0.75
+    },
+    {
+      "office": "president",
+      "year": 2020,
+      "weight": 0.25
+    }
+  ],
+  "rating_bands": {
+    "tossup": 1.5,
+    "lean": 3,
+    "likely": 5
+  },
+  "chambers": {
+    "house": {
+      "seats": 150,
+      "majority": 76
+    },
+    "senate": {
+      "seats": 31,
+      "majority": 16
+    }
+  },
+  "reference": [
+    {
+      "label": "2012 President",
+      "texas_dshare": 41.99
+    },
+    {
+      "label": "2012 U.S. Senate",
+      "texas_dshare": 41.85
+    },
+    {
+      "label": "2014 Governor",
+      "texas_dshare": 39.63
+    },
+    {
+      "label": "2014 U.S. Senate",
+      "texas_dshare": 35.83
+    },
+    {
+      "label": "2016 President",
+      "texas_dshare": 45.29
+    },
+    {
+      "label": "2018 Governor",
+      "texas_dshare": 43.23
+    },
+    {
+      "label": "2018 U.S. Senate",
+      "texas_dshare": 48.7
+    },
+    {
+      "label": "2020 President",
+      "texas_dshare": 47.17
+    },
+    {
+      "label": "2020 U.S. Senate",
+      "texas_dshare": 45.05
+    },
+    {
+      "label": "2022 Governor",
+      "texas_dshare": 44.48
+    },
+    {
+      "label": "2024 President",
+      "texas_dshare": 43.06
+    },
+    {
+      "label": "2024 U.S. Senate",
+      "texas_dshare": 45.65
+    }
+  ]
+}
