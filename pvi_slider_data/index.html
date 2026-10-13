@@ -106,6 +106,7 @@
   .map-wrap { position: relative; border: 1px solid var(--rule); border-radius: 10px; background: #fff; overflow: hidden; }
   .map-tools { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; gap: 8px; pointer-events: none; z-index: 2; }
   .map-tools > * { pointer-events: auto; }
+  .map-tools[hidden] { display: none; }
   select { font: inherit; font-size: 0.875rem; padding: 6px 8px; border: 1px solid var(--rule); border-radius: 8px; background: #fff; color: var(--ink); }
   .zoom { display: flex; gap: 4px; }
   .zoom button { font: inherit; font-size: 1rem; line-height: 1; width: 34px; height: 34px; border: 1px solid var(--rule); border-radius: 8px; background: #fff; color: var(--ink); cursor: pointer; }
@@ -182,6 +183,10 @@
       <button type="button" data-color="ratings" aria-pressed="true">Ratings</button>
       <button type="button" data-color="gradient" aria-pressed="false">Gradient</button>
     </div>
+    <div class="seg" role="group" aria-label="Map style">
+      <button type="button" data-view="map" aria-pressed="true">Map</button>
+      <button type="button" data-view="tiles" aria-pressed="false">Tiles</button>
+    </div>
   </div>
 
   <section class="tally" aria-live="polite">
@@ -228,16 +233,6 @@
     <div class="hint" id="hint">Hold Ctrl (⌘ on Mac) and scroll to zoom</div>
   </div>
 
-  <details id="tableWrap">
-    <summary>All districts as a table</summary>
-    <p class="table-note" id="tableNote"></p>
-    <div class="table-scroll">
-      <table>
-        <thead><tr><th>District</th><th>PVI</th><th id="thActual">2024 pres. D</th><th>Proj. D</th><th>Proj. R</th><th>Rating</th></tr></thead>
-        <tbody id="tbody"></tbody>
-      </table>
-    </div>
-  </details>
 
   <footer id="method"></footer>
 </main>

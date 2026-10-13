@@ -67,9 +67,9 @@
   ];
 
   const W = 960, H = 900;
-  const state = { chamber: "house", mode: "national", T: 45, color: "ratings", highlight: null, senateView: "2026" };
+  const state = { chamber: "house", view: "map", mode: "national", T: 45, color: "ratings", highlight: null, senateView: "2026" };
   const data = {};
-  let params, svg, gMap, gDistricts, outlinePath, zoom, path, tipFeature = null, gradient;
+  let params, svg, gMap, gDistricts, gTiles, outlinePath, zoom, path, projection, tipFeature = null, gradient;
 
   const $ = sel => document.querySelector(sel);
   const f1 = d3.format(".1f");
@@ -101,7 +101,8 @@
   function toFeatures(json) {
     if (json.type === "Topology") {
       const obj = json.objects[Object.keys(json.objects)[0]];
-      return { features: topojson.feature(json, obj).features, outline: topojson.mesh(json, obj, (a, b) => a === b) };
+      return { features: topojson.feature(json, obj).features, outline: topojson.mesh(json, obj, (a, b) => a === b),
+               state: topojson.merge(json, obj.geometries) };
     }
     return { features: json.features, outline: null };   // plain GeoJSON also works
   }
@@ -189,7 +190,12 @@
     $("#zoomOut").addEventListener("click", () => svg.transition().duration(300).call(zoom.scaleBy, 1 / 1.8));
     $("#zoomReset").addEventListener("click", () => { metro.value = "0"; resetZoom(); });
 
-    $("#tableWrap").addEventListener("toggle", () => { renderTable(); postHeight(); });
+    document.querySelectorAll("[data-view]").forEach(b => b.addEventListener("click", () => {
+      state.view = b.dataset.view;
+      setPressed("view", state.view);
+      hideTip();
+      applyView();
+    }));
   }
 
   // Reference results shown as ticks and chips, in the slider's current units
@@ -267,8 +273,9 @@
     gMap = svg.append("g");
     gDistricts = gMap.append("g");
     outlinePath = gMap.append("path").attr("class", "outline");
+    gTiles = gMap.append("g").style("display", "none");
 
-    const projection = d3.geoConicEqualArea().parallels([27.5, 35]).rotate([100, 0])
+    projection = d3.geoConicEqualArea().parallels([27.5, 35]).rotate([100, 0])
       .fitExtent([[12, 12], [W - 12, H - 12]], { type: "FeatureCollection", features: data.house.features });
     path = d3.geoPath(projection);
 
@@ -276,6 +283,7 @@
       .scaleExtent([1, 40])
       .translateExtent([[0, 0], [W, H]])
       .filter(ev => {
+        if (state.view === "tiles") return false;      // tiles fit the frame; no zooming
         if (ev.type === "wheel") return ev.ctrlKey || ev.metaKey;
         if (ev.type.startsWith("touch")) return ev.touches.length > 1 || d3.zoomTransform(svg.node()).k > 1;
         return !ev.button;
@@ -288,7 +296,7 @@
 
     let hintTimer;
     svg.on("wheel.hint", ev => {
-      if (ev.ctrlKey || ev.metaKey) return;
+      if (ev.ctrlKey || ev.metaKey || state.view === "tiles") return;
       $("#hint").classList.add("show");
       clearTimeout(hintTimer);
       hintTimer = setTimeout(() => $("#hint").classList.remove("show"), 1400);
@@ -312,18 +320,114 @@
 
   function drawChamber() {
     const { features, outline } = data[state.chamber];
+    const events = sel => sel
+      .on("pointerenter pointermove", (ev, d) => showTip(ev, d))
+      .on("pointerleave", ev => { if (ev.pointerType !== "touch") hideTip(); })
+      .on("click", (ev, d) => showTip(ev, d));
     gDistricts.selectAll("path.district")
       .data(features, d => d.properties.district)
       .join("path")
       .attr("class", "district")
       .attr("d", path)
-      .on("pointerenter pointermove", (ev, d) => showTip(ev, d))
-      .on("pointerleave", ev => { if (ev.pointerType !== "touch") hideTip(); })
-      .on("click", (ev, d) => showTip(ev, d));
+      .call(events);
     outlinePath.attr("d", outline ? path(outline) : null);
 
-    const actual = latestActualKey();
-    $("#thActual").textContent = actual ? `${actual.year} pres. D` : "Pres. D";
+    const { size, cells } = tileLayout(state.chamber);
+    const t = size * 0.88;
+    gTiles.selectAll("rect.district")
+      .data(features, d => d.properties.district)
+      .join("rect")
+      .attr("class", "district tile")
+      .attr("role", "img")
+      .attr("x", d => cells.get(d.properties.district)[0] - t / 2)
+      .attr("y", d => cells.get(d.properties.district)[1] - t / 2)
+      .attr("width", t).attr("height", t).attr("rx", Math.min(3, t * 0.12))
+      .call(events);
+
+    // center the tile grid and keep every tile inside the frame
+    const xs = [...cells.values()].map(c => c[0]), ys = [...cells.values()].map(c => c[1]);
+    const bx0 = d3.min(xs) - size / 2, bx1 = d3.max(xs) + size / 2;
+    const by0 = d3.min(ys) - size / 2, by1 = d3.max(ys) + size / 2;
+    const k = Math.min(1, (W - 24) / (bx1 - bx0), (H - 24) / (by1 - by0));
+    gTiles.attr("transform",
+      `translate(${(W - k * (bx0 + bx1)) / 2},${(H - k * (by0 + by1)) / 2}) scale(${k})`);
+    applyView();
+  }
+
+  function applyView() {
+    const tiles = state.view === "tiles";
+    gDistricts.style("display", tiles ? "none" : null);
+    outlinePath.style("display", tiles ? "none" : null);
+    gTiles.style("display", tiles ? null : "none");
+    document.querySelector(".map-tools").hidden = tiles;
+    if (tiles && d3.zoomTransform(svg.node()).k !== 1) {
+      $("#metro").value = "0";
+      svg.call(zoom.transform, d3.zoomIdentity);
+    }
+  }
+
+  // ---------------------------------------------------------------- tile layout
+  // Equal-size tiles in a rough Texas shape: lay a square grid over the state, pick the
+  // cell size that gives (just) enough cells inside the outline, then assign each district
+  // to a cell so total squared distance from the districts' real centers is as small as
+  // possible. Districts stay near where they are; dense cities spread into nearby cells.
+  function tileLayout(chamber) {
+    const d = data[chamber];
+    if (d.tiles) return d.tiles;
+    const features = d.features, n = features.length;
+    const inside = d.state
+      ? p => d3.geoContains(d.state, p)
+      : p => features.some(f => d3.geoContains(f, p));
+    const [[x0, y0], [x1, y1]] = d3.geoPath(projection).bounds({ type: "FeatureCollection", features });
+
+    const cellsFor = s => {
+      const out = [];
+      for (let y = y0 + s / 2; y < y1; y += s)
+        for (let x = x0 + s / 2; x < x1; x += s) {
+          const ll = projection.invert([x, y]);
+          if (ll && inside(ll)) out.push([x, y]);
+        }
+      return out;
+    };
+    // shrink the cell size until enough cells fall inside the state
+    let s = Math.sqrt(((x1 - x0) * (y1 - y0)) / n), cells = cellsFor(s);
+    while (cells.length < n) { s *= 0.985; cells = cellsFor(s); }
+
+    const centers = features.map(f => path.centroid(f));
+    const cost = centers.map(([cx, cy]) => cells.map(([x, y]) => (x - cx) ** 2 + (y - cy) ** 2));
+    const pick = hungarian(cost, n, cells.length);
+    const map = new Map(features.map((f, i) => [f.properties.district, cells[pick[i]]]));
+    return (d.tiles = { size: s, cells: map });
+  }
+
+  // Minimum-cost assignment of n rows to m >= n columns (Hungarian algorithm, O(n^2 m)).
+  function hungarian(cost, n, m) {
+    const INF = Infinity, u = new Float64Array(n + 1), v = new Float64Array(m + 1);
+    const p = new Int32Array(m + 1), way = new Int32Array(m + 1);
+    for (let i = 1; i <= n; i++) {
+      p[0] = i;
+      let j0 = 0;
+      const minv = new Float64Array(m + 1).fill(INF), used = new Uint8Array(m + 1);
+      do {
+        used[j0] = 1;
+        const i0 = p[j0];
+        let delta = INF, j1 = 0;
+        for (let j = 1; j <= m; j++) {
+          if (used[j]) continue;
+          const cur = cost[i0 - 1][j - 1] - u[i0] - v[j];
+          if (cur < minv[j]) { minv[j] = cur; way[j] = j0; }
+          if (minv[j] < delta) { delta = minv[j]; j1 = j; }
+        }
+        for (let j = 0; j <= m; j++) {
+          if (used[j]) { u[p[j]] += delta; v[j] -= delta; } else minv[j] -= delta;
+        }
+        j0 = j1;
+      } while (p[j0] !== 0);
+      do { const j1 = way[j0]; p[j0] = p[j1]; j0 = j1; } while (j0);
+    }
+    const out = new Int32Array(n);
+    for (let j = 1; j <= m; j++) if (p[j]) out[p[j] - 1] = j - 1;
+    return out;
   }
 
   // ---------------------------------------------------------------- update
@@ -351,16 +455,21 @@
       if (s > 50) dLead++; else if (s < 50) rLead++;
     }
 
-    gDistricts.selectAll("path.district")
+    gMap.selectAll(".district")
       .style("fill", f => f.properties._held ? CAT[f.properties._cat].fill
         : f.properties._share == null ? "#e3e1db"
         : state.color === "gradient" ? gradient(f.properties._share) : CAT[f.properties._cat].fill)
       .classed("dim", f => state.highlight != null && f.properties._cat !== state.highlight);
 
+    gTiles.selectAll("rect.district").attr("aria-label", f => {
+      const p = f.properties, c = p._cat ? CAT[p._cat] : null;
+      const tail = p._held ? `not up until ${SENATE_2026.nextElection}`
+        : p._share == null ? "no data" : `${c.label}, projected ${f1(p._share)}% Democratic`;
+      return `${CHAMBER_LABEL[state.chamber]} ${p.district}, ${tail}`;
+    });
     renderBar(counts, dLead, rLead);
     renderLegend();
     renderReadout();
-    renderTable();
     if (tipFeature) renderTip(tipFeature);
   }
 
@@ -401,7 +510,7 @@
 
   function setHighlight(key) {
     state.highlight = key;
-    gDistricts.selectAll("path.district")
+    gMap.selectAll(".district")
       .classed("dim", f => key != null && f.properties._cat !== key);
   }
 
@@ -452,7 +561,7 @@
 
   function showTip(ev, f) {
     tipFeature = f;
-    gDistricts.selectAll("path.district").classed("hover", d => d === f);
+    gMap.selectAll(".district").classed("hover", d => d === f);
     d3.select(ev.currentTarget).raise();
     renderTip(f);
     const tip = $("#tip");
@@ -468,7 +577,7 @@
   function hideTip() {
     tipFeature = null;
     $("#tip").style.display = "none";
-    if (gDistricts) gDistricts.selectAll("path.district.hover").classed("hover", false);
+    if (gMap) gMap.selectAll(".district.hover").classed("hover", false);
   }
 
   // ---------------------------------------------------------------- legend, table, method
@@ -485,25 +594,6 @@
       `linear-gradient(90deg, ${d3.range(65, 34.99, -1.5).map(v => gradient(v)).join(",")})`);
   }
 
-  function renderTable() {
-    if (!$("#tableWrap").open) return;
-    const actual = latestActualKey();
-    $("#tableNote").textContent = show2026()
-      ? `Showing the ${SENATE_2026.up.length} seats on the 2026 ballot. The other ${Object.keys(SENATE_2026.holdovers).length} are held until ${SENATE_2026.nextElection}.`
-      : "";
-    const rows = data[state.chamber].features
-      .filter(f => f.properties._share != null && !f.properties._held)
-      .slice()
-      .sort((a, b) => Math.abs(a.properties._share - 50) - Math.abs(b.properties._share - 50));
-    $("#tbody").innerHTML = rows.map(f => {
-      const p = f.properties, c = CAT[p._cat];
-      return `<tr><td>${esc(p.district)}</td><td>${pviLabel(p.pvi)}</td>` +
-        `<td>${actual && p[actual.key] != null ? f1(p[actual.key]) + "%" : "–"}</td>` +
-        `<td>${f1(p._share)}%</td><td>${fR(p._share)}%</td>` +
-        `<td><span class="sw" style="background:${c.bg}"></span>${c.label}</td></tr>`;
-    }).join("");
-  }
-
   function buildMethod() {
     const races = params.pvi_races.map(r => `${Math.round(r.weight * 100)}% ${r.year}`).join(" + ");
     $("#method").innerHTML =
@@ -511,7 +601,7 @@
        against the nation as a whole, the same way the Cook Political Report calculates PVI for congressional districts.
        The projection moves every district by the same amount as the national environment:
        projected Democratic share = PVI + the national Democratic share. The Texas statewide vote shown is the one
-       implied by the national vote and Texas's own PVI (${pviLabel(txLean())}). Districts are sorted in the table from closest to safest.
+       implied by the national vote and Texas's own PVI (${pviLabel(txLean())}).
        In the Senate's default view, only the ${SENATE_2026.up.length} seats on the 2026 ballot are projected; the other
        ${Object.keys(SENATE_2026.holdovers).length} are not up for election this year and count for their current party.</p>
        <p>This is a uniform-swing illustration, not a forecast: it ignores candidates, incumbency, turnout differences
