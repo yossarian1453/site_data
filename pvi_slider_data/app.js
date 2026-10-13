@@ -361,13 +361,10 @@
     const n = clamp(state.T - txLean(), 0, 100);
     $("#readoutNational").innerHTML = share(n);
     $("#readoutTexas").innerHTML = share(state.T);
-    const signed = (x, even, unit = "") =>
-      Math.abs(x) < 0.05 ? even : `${x > 0 ? "D" : "R"}+${f1(Math.abs(x))}${unit}`;
-    const env = n - 50;          // Cook scale: points of D share above 50
     const m = 2 * n - 100;       // national two-party margin (D minus R)
-    const pre = state.mode === "texas" ? "Equivalent national" : "National";
-    $("#readoutSub").innerHTML =
-      `${pre} environment: ${signed(env, "EVEN")}<br>${pre} popular vote margin: ${signed(m, "Tied", "%")}`;
+    const marginText = Math.abs(m) < 0.05 ? "Tied" : `${m > 0 ? "D" : "R"}+${f1(Math.abs(m))}%`;
+    $("#readoutSub").textContent =
+      `${state.mode === "texas" ? "Equivalent national House popular vote margin" : "National House popular vote margin"}: ${marginText}`;
     document.querySelectorAll(".chip").forEach(b =>
       b.setAttribute("aria-pressed", String(Math.abs(+b.dataset.value - v) < 0.05)));
   }
