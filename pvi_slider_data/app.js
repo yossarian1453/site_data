@@ -213,7 +213,9 @@
       b.type = "button";
       b.className = "chip";
       b.dataset.value = r.value;
-      b.textContent = `${r.label} · D ${f1(r.value)}%`;
+      b.textContent = r.label;
+      b.title = `${r.label}: D ${f1(r.value)}% · R ${f1(100 - r.value)}%`;
+      b.setAttribute("aria-label", b.title);
       b.addEventListener("click", () => {
         state.T = state.mode === "texas" ? r.value : r.value + txLean();
         input.value = clamp(sliderValue(), lo, hi);
@@ -359,10 +361,13 @@
     const n = clamp(state.T - txLean(), 0, 100);
     $("#readoutNational").innerHTML = share(n);
     $("#readoutTexas").innerHTML = share(state.T);
-    const m = 2 * n - 100;   // national two-party margin, points (D minus R)
-    const marginText = Math.abs(m) < 0.05 ? "Tied" : `${m > 0 ? "D" : "R"}+${f1(Math.abs(m))}%`;
-    $("#readoutSub").textContent =
-      `${state.mode === "texas" ? "Equivalent national popular vote margin" : "National popular vote margin"}: ${marginText}`;
+    const signed = (x, even, unit = "") =>
+      Math.abs(x) < 0.05 ? even : `${x > 0 ? "D" : "R"}+${f1(Math.abs(x))}${unit}`;
+    const env = n - 50;          // Cook scale: points of D share above 50
+    const m = 2 * n - 100;       // national two-party margin (D minus R)
+    const pre = state.mode === "texas" ? "Equivalent national" : "National";
+    $("#readoutSub").innerHTML =
+      `${pre} environment: ${signed(env, "EVEN")}<br>${pre} popular vote margin: ${signed(m, "Tied", "%")}`;
     document.querySelectorAll(".chip").forEach(b =>
       b.setAttribute("aria-pressed", String(Math.abs(+b.dataset.value - v) < 0.05)));
   }
