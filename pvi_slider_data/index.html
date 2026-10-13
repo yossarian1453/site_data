@@ -82,14 +82,17 @@
   input[type=range] {
     -webkit-appearance: none; appearance: none; width: 100%; height: var(--thumb); margin: 0; background: transparent; cursor: pointer;
   }
-  input[type=range]::-webkit-slider-runnable-track { height: 8px; border-radius: 4px; background: linear-gradient(90deg, #8a1320, #eb8088 45%, #cdc8bc 50%, #86a6ea 55%, #1b3b8c); }
-  input[type=range]::-moz-range-track { height: 8px; border-radius: 4px; background: linear-gradient(90deg, #8a1320, #eb8088 45%, #cdc8bc 50%, #86a6ea 55%, #1b3b8c); }
+  /* --track is set by app.js to the map's gradient scale, so the slider doubles as its color key */
+  input[type=range]::-webkit-slider-runnable-track { height: 8px; border-radius: 4px; background: var(--track, linear-gradient(90deg, #1b3b8c, #86a6ea 45%, #e8e5de 50%, #eb8088 55%, #8a1320)); }
+  input[type=range]::-moz-range-track { height: 8px; border-radius: 4px; background: var(--track, linear-gradient(90deg, #1b3b8c, #86a6ea 45%, #e8e5de 50%, #eb8088 55%, #8a1320)); }
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none; width: var(--thumb); height: var(--thumb); margin-top: calc((8px - var(--thumb)) / 2);
     border-radius: 50%; background: #fff; border: 2px solid var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.25);
   }
   input[type=range]::-moz-range-thumb { width: var(--thumb); height: var(--thumb); border-radius: 50%; background: #fff; border: 2px solid var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.25); }
   .ticks { position: relative; height: 10px; }
+  .scale-labels { display: flex; justify-content: space-between; margin-top: 2px; font-size: 0.78rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .scale-labels .d { color: var(--d); font-weight: 600; } .scale-labels .r { color: var(--r); font-weight: 600; }
   .ticks i { position: absolute; top: 0; width: 2px; height: 8px; margin-left: -1px; background: var(--ink-3); border-radius: 1px; }
   .ticks i.mid { background: var(--ink); height: 10px; }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
@@ -207,6 +210,7 @@
     <div class="range-wrap">
       <input type="range" id="vote" step="0.1">
       <div class="ticks" id="ticks" aria-hidden="true"></div>
+      <div class="scale-labels" aria-hidden="true"><span class="d">D 65%+</span><span>50–50</span><span class="r">R 65%+</span></div>
     </div>
     <div class="chips" id="chips" role="group" aria-label="Past results"></div>
   </section>
@@ -222,10 +226,6 @@
     </div>
     <svg id="map" role="img" aria-label="Map of districts colored by projected result"></svg>
     <div class="hint" id="hint">Hold Ctrl (⌘ on Mac) and scroll to zoom</div>
-  </div>
-  <div class="gradient-key" id="gradientKey">
-    <div class="ramp" id="ramp"></div>
-    <div class="ends"><span>R 65%+</span><span>50–50</span><span>D 65%+</span></div>
   </div>
 
   <details id="tableWrap">

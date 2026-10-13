@@ -170,12 +170,11 @@
     document.querySelectorAll("[data-color]").forEach(b => b.addEventListener("click", () => {
       state.color = b.dataset.color;
       setPressed("color", state.color);
-      $("#gradientKey").classList.toggle("show", state.color === "gradient");
       update();
     }));
 
     $("#vote").addEventListener("input", e => {
-      const v = +e.target.value;
+      const v = mirror(+e.target.value);
       state.T = state.mode === "texas" ? v : v + txLean();
       update();
     });
@@ -207,16 +206,22 @@
     return state.mode === "texas" ? state.T : state.T - txLean();
   }
 
+  // The slider runs Democratic (left) to Republican (right), so its raw value is the D share mirrored.
+  function mirror(x) {
+    const [lo, hi] = CONFIG.range[state.mode];
+    return lo + hi - x;
+  }
+
   function syncSlider() {
     const [lo, hi] = CONFIG.range[state.mode];
     const input = $("#vote");
     input.min = lo;
     input.max = hi;
-    input.value = clamp(sliderValue(), lo, hi);
+    input.value = mirror(clamp(sliderValue(), lo, hi));
     input.setAttribute("aria-label", state.mode === "texas"
-      ? "Texas two-party Democratic vote share (%)" : "National two-party Democratic vote share (%)");
+      ? "Texas two-party vote, Democratic to Republican" : "National two-party vote, Democratic to Republican");
 
-    const pos = v => `calc(${(v - lo) / (hi - lo)} * (100% - var(--thumb)) + var(--thumb) / 2)`;
+    const pos = v => `calc(${(hi - v) / (hi - lo)} * (100% - var(--thumb)) + var(--thumb) / 2)`;
     const refs = references().filter(r => r.value >= lo && r.value <= hi);
     const ticks = $("#ticks");
     ticks.innerHTML = "";
@@ -242,7 +247,7 @@
       b.setAttribute("aria-label", b.title);
       b.addEventListener("click", () => {
         state.T = state.mode === "texas" ? r.value : r.value + txLean();
-        input.value = clamp(sliderValue(), lo, hi);
+        input.value = mirror(clamp(sliderValue(), lo, hi));
         update();
       });
       chips.append(b);
@@ -405,6 +410,7 @@
     const share = d => `<span class="d">D ${f1(d)}%</span> · <span class="r">R ${fR(d)}%</span>`;
     const n = clamp(state.T - txLean(), 0, 100);
     $("#readoutNational").innerHTML = share(n);
+    $("#vote").setAttribute("aria-valuetext", `Democrats ${f1(n)}%, Republicans ${fR(n)}%`);
     $("#readoutTexas").innerHTML = share(state.T);
     const m = 2 * n - 100;       // national two-party margin (D minus R)
     const marginText = Math.abs(m) < 0.05 ? "Tied" : `${m > 0 ? "D" : "R"}+${f1(Math.abs(m))}%`;
@@ -474,7 +480,9 @@
   }
 
   function buildLegend() {
-    $("#ramp").style.background = `linear-gradient(90deg, ${d3.range(35, 65.01, 1.5).map(v => gradient(v)).join(",")})`;
+    // slider track = the map's gradient, Democratic 65% on the left to Republican 65% on the right
+    $("#vote").style.setProperty("--track",
+      `linear-gradient(90deg, ${d3.range(65, 34.99, -1.5).map(v => gradient(v)).join(",")})`);
   }
 
   function renderTable() {
