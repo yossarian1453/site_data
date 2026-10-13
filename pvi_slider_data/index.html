@@ -134,6 +134,9 @@
   /* table */
   details { margin-top: 16px; }
   summary { cursor: pointer; font-weight: 600; font-size: 0.95rem; }
+  .table-note { margin: 8px 0 0; font-size: 0.82rem; color: var(--ink-2); }
+  .table-note:empty { display: none; }
+  .seg[hidden] { display: none; }
   .table-scroll { max-height: 420px; overflow: auto; margin-top: 8px; border: 1px solid var(--rule); border-radius: 8px; }
   table { border-collapse: collapse; width: 100%; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
   th, td { padding: 6px 10px; text-align: right; border-bottom: 1px solid var(--rule); white-space: nowrap; }
@@ -167,6 +170,10 @@
     <div class="seg" role="group" aria-label="Chamber">
       <button type="button" data-chamber="house" aria-pressed="true">State House</button>
       <button type="button" data-chamber="senate" aria-pressed="false">State Senate</button>
+    </div>
+    <div class="seg" role="group" aria-label="Senate seats shown" id="senateView" hidden>
+      <button type="button" data-sview="2026" aria-pressed="true">Up in 2026</button>
+      <button type="button" data-sview="all" aria-pressed="false">All 31 seats</button>
     </div>
     <div class="seg" role="group" aria-label="Slider measures">
       <button type="button" data-mode="texas" aria-pressed="true">Texas vote</button>
@@ -227,6 +234,7 @@
 
   <details id="tableWrap">
     <summary>All districts as a table</summary>
+    <p class="table-note" id="tableNote"></p>
     <div class="table-scroll">
       <table>
         <thead><tr><th>District</th><th>PVI</th><th id="thActual">2024 pres. D</th><th>Proj. D</th><th>Proj. R</th><th>Rating</th></tr></thead>

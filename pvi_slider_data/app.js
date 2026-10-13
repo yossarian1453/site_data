@@ -33,7 +33,26 @@
     { key: "likelyR", label: "Likely R", color: "#cc3a47", ink: "#ffffff" },
     { key: "safeR",   label: "Safe R",   color: "#8a1320", ink: "#ffffff" },
   ];
-  const CAT = Object.fromEntries(CATS.map(c => [c.key, c]));
+  // Texas Senate, 2026: terms are staggered, so only some seats are on the ballot.
+  // Holdovers are the seats not up this year; parties are the current holders.
+  // Edit here if the roster changes.
+  const SENATE_2026 = {
+    up: [1, 2, 3, 4, 5, 9, 11, 13, 18, 19, 21, 22, 24, 26, 28, 31],
+    holdovers: { 6: "D", 7: "R", 8: "R", 10: "R", 12: "R", 14: "D", 15: "D", 16: "D",
+                 17: "R", 20: "D", 23: "D", 25: "R", 27: "R", 29: "D", 30: "R" },
+    nextElection: 2028,
+  };
+
+  // Seats not on the ballot: hatched, muted party tints at the ends of the seat bar.
+  const hatch = (base, stripe) => `repeating-linear-gradient(45deg, ${stripe} 0 2px, ${base} 2px 6px)`;
+  const HELD = [
+    { key: "heldD", party: "D", label: "Held D (not up)", base: "#e2e7f4", stripe: "#9fb2dd", ink: "#14213d" },
+    { key: "heldR", party: "R", label: "Held R (not up)", base: "#f4e2e4", stripe: "#dda1a7", ink: "#3a0a0f" },
+  ];
+  HELD.forEach(h => { h.bg = hatch(h.base, h.stripe); h.fill = `url(#pat-${h.key})`; h.color = h.stripe; });
+  CATS.forEach(c => { c.bg = c.color; c.fill = c.color; });
+  const BAR_CATS = [HELD[0], ...CATS, HELD[1]];
+  const CAT = Object.fromEntries(BAR_CATS.map(c => [c.key, c]));
   const CHAMBER_LABEL = { house: "House District", senate: "Senate District" };
 
   // Zoom presets: [west, south, east, north] in degrees
@@ -48,7 +67,7 @@
   ];
 
   const W = 960, H = 900;
-  const state = { chamber: "house", mode: "texas", T: 45, color: "ratings", highlight: null };
+  const state = { chamber: "house", mode: "texas", T: 45, color: "ratings", highlight: null, senateView: "2026" };
   const data = {};
   let params, svg, gMap, gDistricts, outlinePath, zoom, path, tipFeature = null, gradient;
 
@@ -60,6 +79,8 @@
   const txLean = () => params.texas_pvi_vs_nation;
   const majority = () => params.chambers[state.chamber].majority;
   const seats = () => params.chambers[state.chamber].seats;
+  const show2026 = () => state.chamber === "senate" && state.senateView === "2026";
+  const heldParty = f => show2026() ? SENATE_2026.holdovers[+f.properties.district] || null : null;
 
   function rate(share) {
     const b = params.rating_bands, d = share - 50, a = Math.abs(d), side = d > 0 ? "D" : "R";
@@ -133,8 +154,15 @@
       state.chamber = b.dataset.chamber;
       state.highlight = null;
       setPressed("chamber", state.chamber);
+      $("#senateView").hidden = state.chamber !== "senate";
       hideTip();
       drawChamber();
+      update();
+    }));
+    document.querySelectorAll("[data-sview]").forEach(b => b.addEventListener("click", () => {
+      state.senateView = b.dataset.sview;
+      state.highlight = null;
+      setPressed("sview", state.senateView);
       update();
     }));
     document.querySelectorAll("[data-mode]").forEach(b => b.addEventListener("click", () => {
@@ -228,6 +256,13 @@
   // ---------------------------------------------------------------- map
   function buildMap() {
     svg = d3.select("#map").attr("viewBox", `0 0 ${W} ${H}`);
+    const defs = svg.append("defs");
+    for (const h of HELD) {
+      const pat = defs.append("pattern").attr("id", `pat-${h.key}`).attr("patternUnits", "userSpaceOnUse")
+        .attr("width", 6).attr("height", 6).attr("patternTransform", "rotate(45)");
+      pat.append("rect").attr("width", 6).attr("height", 6).attr("fill", h.base);
+      pat.append("rect").attr("width", 2).attr("height", 6).attr("fill", h.stripe);
+    }
     gMap = svg.append("g");
     gDistricts = gMap.append("g");
     outlinePath = gMap.append("path").attr("class", "outline");
@@ -244,7 +279,10 @@
         if (ev.type.startsWith("touch")) return ev.touches.length > 1 || d3.zoomTransform(svg.node()).k > 1;
         return !ev.button;
       })
-      .on("zoom", ev => gMap.attr("transform", ev.transform));
+      .on("zoom", ev => {
+        gMap.attr("transform", ev.transform);
+        defs.selectAll("pattern").attr("patternTransform", `rotate(45) scale(${1 / ev.transform.k})`);
+      });
     svg.call(zoom).on("dblclick.zoom", null);
 
     let hintTimer;
@@ -295,23 +333,31 @@
 
   function update() {
     const features = data[state.chamber].features;
-    const counts = Object.fromEntries(CATS.map(c => [c.key, 0]));
+    const counts = Object.fromEntries(BAR_CATS.map(c => [c.key, 0]));
     let dLead = 0, rLead = 0;
     for (const f of features) {
-      const s = projected(f);
+      const s = projected(f), held = heldParty(f);
       f.properties._share = s;
-      f.properties._cat = s == null ? null : rate(s);
+      f.properties._held = held;
+      f.properties._cat = held ? `held${held}` : s == null ? null : rate(s);
+      if (held) {
+        counts[f.properties._cat]++;
+        if (held === "D") dLead++; else rLead++;
+        continue;
+      }
       if (s == null) continue;
       counts[f.properties._cat]++;
       if (s > 50) dLead++; else if (s < 50) rLead++;
     }
 
     gDistricts.selectAll("path.district")
-      .style("fill", f => f.properties._share == null ? "#e3e1db"
-        : state.color === "gradient" ? gradient(f.properties._share) : CAT[f.properties._cat].color)
+      .style("fill", f => f.properties._held ? CAT[f.properties._cat].fill
+        : f.properties._share == null ? "#e3e1db"
+        : state.color === "gradient" ? gradient(f.properties._share) : CAT[f.properties._cat].fill)
       .classed("dim", f => state.highlight != null && f.properties._cat !== state.highlight);
 
     renderBar(counts, dLead, rLead);
+    renderLegend();
     renderReadout();
     renderTable();
     if (tipFeature) renderTip(tipFeature);
@@ -321,9 +367,9 @@
     const bar = $("#bar");
     const width = bar.clientWidth || 600;
     const n = seats();
-    const btns = d3.select(bar).selectAll("button").data(CATS, c => c.key).join(enter => enter.append("button")
+    const btns = d3.select(bar).selectAll("button").data(BAR_CATS, c => c.key).join(enter => enter.append("button")
       .attr("type", "button")
-      .style("background", c => c.color)
+      .style("background", c => c.bg)
       .style("color", c => c.ink)
       .on("mouseenter focus", (ev, c) => setHighlight(c.key))
       .on("mouseleave blur", () => setHighlight(null))
@@ -335,8 +381,8 @@
       .attr("aria-label", c => `${c.label}: ${counts[c.key]} seats`)
       .text(c => (counts[c.key] / n) * width >= 22 ? counts[c.key] : "");
 
-    const dSure = counts.safeD + counts.likelyD + counts.leanD;
-    const rSure = counts.safeR + counts.likelyR + counts.leanR;
+    const dSure = counts.heldD + counts.safeD + counts.likelyD + counts.leanD;
+    const rSure = counts.heldR + counts.safeR + counts.likelyR + counts.leanR;
     $("#dTotal").textContent = dSure;
     $("#rTotal").textContent = rSure;
 
@@ -344,9 +390,12 @@
     const control = dLead >= maj ? `<b style="color:var(--d)">Democratic majority</b>`
       : rLead >= maj ? `<b style="color:var(--r)">Republican majority</b>` : `<b>No majority</b>`;
     const toss = counts.toss;
+    const held = counts.heldD + counts.heldR;
     $("#tallyNote").innerHTML =
-      `<span class="nw">${maj} seats for a majority</span> · <span class="nw">${toss} toss-up${toss === 1 ? "" : "s"}</span> · ` +
-      `<span class="nw">Leading: D ${dLead}, R ${rLead}</span> <span class="nw">→ ${control}</span>`;
+      `<span class="nw">${maj} seats for a majority</span> · ` +
+      (held ? `<span class="nw">${n - held} seats up in 2026, ${held} held until ${SENATE_2026.nextElection}</span> · ` : "") +
+      `<span class="nw">${toss} toss-up${toss === 1 ? "" : "s"}</span> · ` +
+      `<span class="nw">${held ? "Projected chamber" : "Leading"}: D ${dLead}, R ${rLead}</span> <span class="nw">→ ${control}</span>`;
   }
 
   function setHighlight(key) {
@@ -388,12 +437,15 @@
     const rows = [
       ["PVI", pviLabel(p.pvi)],
       ...actualKeys(p).map(({ key, year }) => [`${year} president, D share`, p[key] == null ? "–" : `${f1(p[key])}%`]),
-      ["Projected", s == null ? "–" : `D ${f1(s)}% · R ${f1(100 - s)}%`],
+      p._held
+        ? ["Current holder", p._held === "D" ? "Democrat" : "Republican"]
+        : ["Projected", s == null ? "–" : `D ${f1(s)}% · R ${f1(100 - s)}%`],
     ];
+    const ratingText = p._held ? `Not up until ${SENATE_2026.nextElection}` : cat ? cat.label : "";
     $("#tip").innerHTML =
       `<h3>${CHAMBER_LABEL[state.chamber]} ${esc(p.district)}</h3>` +
       rows.map(([a, b]) => `<div class="row"><span>${esc(a)}</span><span>${esc(b)}</span></div>`).join("") +
-      (cat ? `<div class="rating"><span class="sw" style="background:${cat.color}"></span>${cat.label}</div>` : "");
+      (cat ? `<div class="rating"><span class="sw" style="background:${cat.bg}"></span>${ratingText}</div>` : "");
   }
 
   function showTip(ev, f) {
@@ -418,18 +470,25 @@
   }
 
   // ---------------------------------------------------------------- legend, table, method
+  function renderLegend() {
+    const b = params.rating_bands, m = x => +(2 * x).toFixed(1);   // bands are stored in share points
+    const cats = show2026() ? BAR_CATS : CATS;
+    $("#legend").innerHTML = cats.map(c => `<li><span class="sw" style="background:${c.bg}"></span>${c.label}</li>`).join("") +
+      `<li>Projected margin: toss-up &lt;${m(b.tossup)}, lean ${m(b.tossup)}–${m(b.lean)}, likely ${m(b.lean)}–${m(b.likely)}, safe ${m(b.likely)}+ pts</li>`;
+  }
+
   function buildLegend() {
-    const b = params.rating_bands;
-    $("#legend").innerHTML = CATS.map(c => `<li><span class="sw" style="background:${c.color}"></span>${c.label}</li>`).join("") +
-      `<li>Margins from 50%: toss-up &lt;${b.tossup}, lean ${b.tossup}–${b.lean}, likely ${b.lean}–${b.likely}, safe ${b.likely}+ pts</li>`;
     $("#ramp").style.background = `linear-gradient(90deg, ${d3.range(35, 65.01, 1.5).map(v => gradient(v)).join(",")})`;
   }
 
   function renderTable() {
     if (!$("#tableWrap").open) return;
     const actual = latestActualKey();
+    $("#tableNote").textContent = show2026()
+      ? `Showing the ${SENATE_2026.up.length} seats on the 2026 ballot. The other ${Object.keys(SENATE_2026.holdovers).length} are held until ${SENATE_2026.nextElection}.`
+      : "";
     const rows = data[state.chamber].features
-      .filter(f => f.properties._share != null)
+      .filter(f => f.properties._share != null && !f.properties._held)
       .slice()
       .sort((a, b) => Math.abs(a.properties._share - 50) - Math.abs(b.properties._share - 50));
     $("#tbody").innerHTML = rows.map(f => {
@@ -437,7 +496,7 @@
       return `<tr><td>${esc(p.district)}</td><td>${pviLabel(p.pvi)}</td>` +
         `<td>${actual && p[actual.key] != null ? f1(p[actual.key]) + "%" : "–"}</td>` +
         `<td>${f1(p._share)}%</td><td>${f1(100 - p._share)}%</td>` +
-        `<td><span class="sw" style="background:${c.color}"></span>${c.label}</td></tr>`;
+        `<td><span class="sw" style="background:${c.bg}"></span>${c.label}</td></tr>`;
     }).join("");
   }
 
@@ -448,7 +507,9 @@
        against the nation as a whole, the same way the Cook Political Report calculates PVI for congressional districts.
        The projection moves every district by the same amount as the national environment:
        projected Democratic share = PVI + the national Democratic share. Texas mode converts a statewide vote to a
-       national one using Texas's own PVI (${pviLabel(txLean())}). Districts are sorted in the table from closest to safest.</p>
+       national one using Texas's own PVI (${pviLabel(txLean())}). Districts are sorted in the table from closest to safest.
+       In the Senate's default view, only the ${SENATE_2026.up.length} seats on the 2026 ballot are projected; the other
+       ${Object.keys(SENATE_2026.holdovers).length} are not up for election this year and count for their current party.</p>
        <p>This is a uniform-swing illustration, not a forecast: it ignores candidates, incumbency, turnout differences
        and uncontested races. Sources: <a href="https://data.capitol.texas.gov/dataset/comprehensive-election-datasets-compressed-format" target="_blank" rel="noopener">Texas Legislative Council election data</a> (2020, 2024);
        national totals from the <a href="https://www.fec.gov/introduction-campaign-finance/election-results-and-voting-information/" target="_blank" rel="noopener">FEC</a>.</p>`;
