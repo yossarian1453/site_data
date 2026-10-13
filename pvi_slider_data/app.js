@@ -67,12 +67,13 @@
   ];
 
   const W = 960, H = 900;
-  const state = { chamber: "house", mode: "texas", T: 45, color: "ratings", highlight: null, senateView: "2026" };
+  const state = { chamber: "house", mode: "national", T: 45, color: "ratings", highlight: null, senateView: "2026" };
   const data = {};
   let params, svg, gMap, gDistricts, outlinePath, zoom, path, tipFeature = null, gradient;
 
   const $ = sel => document.querySelector(sel);
   const f1 = d3.format(".1f");
+  const fR = d => f1(100 - +f1(d));   // R share from the rounded D share, so the pair always sums to 100.0
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
   const pviLabel = x => (x == null ? "–" : Math.abs(x) < 0.5 ? "EVEN" : `${x > 0 ? "D" : "R"}+${Math.round(Math.abs(x))}`);
@@ -124,8 +125,9 @@
       data[ch].features.sort((a, b) => +a.properties.district - +b.properties.district);
     }
 
-    const pres24 = params.reference.find(r => /2024/.test(r.label) && /President/.test(r.label));
-    state.T = pres24 ? pres24.texas_dshare : 45;
+    // open at the 2024 national result (state.T is kept internally as the implied Texas share)
+    const nat24 = params.national.find(n => n.year === 2024);
+    state.T = (nat24 ? nat24.dshare : 50) + txLean();
 
     gradient = d3.scaleDiverging(d3.piecewise(d3.interpolateLab,
       ["#8a1320", "#cc3a47", "#eb8088", "#e8e5de", "#86a6ea", "#3f68c8", "#1b3b8c"]))
@@ -165,12 +167,6 @@
       setPressed("sview", state.senateView);
       update();
     }));
-    document.querySelectorAll("[data-mode]").forEach(b => b.addEventListener("click", () => {
-      state.mode = b.dataset.mode;
-      setPressed("mode", state.mode);
-      syncSlider();
-      update();
-    }));
     document.querySelectorAll("[data-color]").forEach(b => b.addEventListener("click", () => {
       state.color = b.dataset.color;
       setPressed("color", state.color);
@@ -204,7 +200,7 @@
     }
     return params.national
       .slice().sort((a, b) => a.year - b.year)
-      .map(n => ({ label: `${n.year} President (national)`, value: n.dshare }));
+      .map(n => ({ label: `${n.year} President`, value: n.dshare }));
   }
 
   function sliderValue() {
@@ -242,7 +238,7 @@
       b.className = "chip";
       b.dataset.value = r.value;
       b.textContent = r.label;
-      b.title = `${r.label}: D ${f1(r.value)}% · R ${f1(100 - r.value)}%`;
+      b.title = `${r.label}: D ${f1(r.value)}% · R ${fR(r.value)}%`;
       b.setAttribute("aria-label", b.title);
       b.addEventListener("click", () => {
         state.T = state.mode === "texas" ? r.value : r.value + txLean();
@@ -406,7 +402,7 @@
 
   function renderReadout() {
     const v = sliderValue();
-    const share = d => `<span class="d">D ${f1(d)}%</span> · <span class="r">R ${f1(100 - d)}%</span>`;
+    const share = d => `<span class="d">D ${f1(d)}%</span> · <span class="r">R ${fR(d)}%</span>`;
     const n = clamp(state.T - txLean(), 0, 100);
     $("#readoutNational").innerHTML = share(n);
     $("#readoutTexas").innerHTML = share(state.T);
@@ -439,7 +435,7 @@
       ...actualKeys(p).map(({ key, year }) => [`${year} president, D share`, p[key] == null ? "–" : `${f1(p[key])}%`]),
       p._held
         ? ["Current holder", p._held === "D" ? "Democrat" : "Republican"]
-        : ["Projected", s == null ? "–" : `D ${f1(s)}% · R ${f1(100 - s)}%`],
+        : ["Projected", s == null ? "–" : `D ${f1(s)}% · R ${fR(s)}%`],
     ];
     const ratingText = p._held ? `Not up until ${SENATE_2026.nextElection}` : cat ? cat.label : "";
     $("#tip").innerHTML =
@@ -495,7 +491,7 @@
       const p = f.properties, c = CAT[p._cat];
       return `<tr><td>${esc(p.district)}</td><td>${pviLabel(p.pvi)}</td>` +
         `<td>${actual && p[actual.key] != null ? f1(p[actual.key]) + "%" : "–"}</td>` +
-        `<td>${f1(p._share)}%</td><td>${f1(100 - p._share)}%</td>` +
+        `<td>${f1(p._share)}%</td><td>${fR(p._share)}%</td>` +
         `<td><span class="sw" style="background:${c.bg}"></span>${c.label}</td></tr>`;
     }).join("");
   }
@@ -506,8 +502,8 @@
       `<p><b>How it works.</b> Each district's PVI blends the two-party presidential vote (${races}) and is measured
        against the nation as a whole, the same way the Cook Political Report calculates PVI for congressional districts.
        The projection moves every district by the same amount as the national environment:
-       projected Democratic share = PVI + the national Democratic share. Texas mode converts a statewide vote to a
-       national one using Texas's own PVI (${pviLabel(txLean())}). Districts are sorted in the table from closest to safest.
+       projected Democratic share = PVI + the national Democratic share. The Texas statewide vote shown is the one
+       implied by the national vote and Texas's own PVI (${pviLabel(txLean())}). Districts are sorted in the table from closest to safest.
        In the Senate's default view, only the ${SENATE_2026.up.length} seats on the 2026 ballot are projected; the other
        ${Object.keys(SENATE_2026.holdovers).length} are not up for election this year and count for their current party.</p>
        <p>This is a uniform-swing illustration, not a forecast: it ignores candidates, incumbency, turnout differences

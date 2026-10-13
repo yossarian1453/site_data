@@ -72,12 +72,12 @@
 
   /* slider */
   .vote { margin: 22px 0 12px; padding: 14px 16px 12px; background: var(--panel); border-radius: 10px; }
-  .vote-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; }
+  .vote-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
   .vote-label { font-weight: 600; font-size: 0.95rem; }
   .vote-top + .vote-top { margin-top: 4px; }
   .readout { font-variant-numeric: tabular-nums; font-size: 1.05rem; font-weight: 700; }
   .readout .d { color: var(--d); } .readout .r { color: var(--r); }
-  .readout-sub { font-size: 0.85rem; color: var(--ink-2); margin-top: 2px; min-height: 1.2em; }
+  .readout-sub { font-size: 0.85rem; color: var(--ink-2); margin-top: 12px; min-height: 1.2em; }
   .range-wrap { position: relative; margin: 10px 0 4px; }
   input[type=range] {
     -webkit-appearance: none; appearance: none; width: 100%; height: var(--thumb); margin: 0; background: transparent; cursor: pointer;
@@ -163,7 +163,7 @@
 <body>
 <main class="swing" id="app">
   <h1>Texas Legislature swingometer</h1>
-  <p class="dek">Slide the statewide vote and see how each district would line up if every district moved by the same amount.
+  <p class="dek">Slide the national vote and see how each district would line up if every district moved by the same amount.
     Districts are colored by their projected result; the bar counts seats by rating.</p>
 
   <div class="controls">
@@ -174,10 +174,6 @@
     <div class="seg" role="group" aria-label="Senate seats shown" id="senateView" hidden>
       <button type="button" data-sview="2026" aria-pressed="true">Up in 2026</button>
       <button type="button" data-sview="all" aria-pressed="false">All 31 seats</button>
-    </div>
-    <div class="seg" role="group" aria-label="Slider measures">
-      <button type="button" data-mode="texas" aria-pressed="true">Texas vote</button>
-      <button type="button" data-mode="national" aria-pressed="false">National vote</button>
     </div>
     <div class="seg" role="group" aria-label="Map coloring">
       <button type="button" data-color="ratings" aria-pressed="true">Ratings</button>
@@ -200,11 +196,11 @@
 
   <section class="vote">
     <div class="vote-top">
-      <span class="vote-label">National two-party vote</span>
+      <span class="vote-label">National two-party vote:</span>
       <div class="readout" id="readoutNational"></div>
     </div>
     <div class="vote-top">
-      <span class="vote-label">Texas two-party vote</span>
+      <span class="vote-label">Texas two-party vote:</span>
       <div class="readout" id="readoutTexas"></div>
     </div>
     <div class="readout-sub" id="readoutSub"></div>
