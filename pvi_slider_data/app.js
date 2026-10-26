@@ -524,7 +524,7 @@
     const m = 2 * n - 100;       // national two-party margin (D minus R)
     const marginText = Math.abs(m) < 0.05 ? "Tied" : `${m > 0 ? "D" : "R"}+${f1(Math.abs(m))}%`;
     $("#readoutSub").textContent =
-      `${state.mode === "texas" ? "Equivalent national House popular vote margin" : "National House popular vote margin"}: ${marginText}`;
+      `${state.mode === "texas" ? "Equivalent national House popular vote share" : "National House popular vote share"}: ${marginText}`;
     document.querySelectorAll(".chip").forEach(b =>
       b.setAttribute("aria-pressed", String(Math.abs(+b.dataset.value - v) < 0.05)));
   }
