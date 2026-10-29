@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Texas Population by Race</title>
+<title>Texas Race and Ethnicity</title>
 <style>
   :root {
     color-scheme: light;
@@ -14,12 +14,13 @@
     --rule: #dcdad3;
     --grid: #ebe9e3;
     --focus: #1b3b8c;
-    /* categorical slots 2-7 of the reference palette, in validated order */
-    --s-white: #eb6834;
+    /* categorical slots 1-7 of the reference palette, in validated order */
+    --s-white: #2a78d6;
+    --s-hisp:  #eb6834;
     --s-black: #1baf7a;
-    --s-other: #eda100;
+    --s-asian: #eda100;
     --s-multi: #e87ba4;
-    --s-api:   #008300;
+    --s-other: #008300;
     --s-aian:  #6250d6;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
@@ -79,8 +80,8 @@
 </head>
 <body>
 <main class="wrap" id="app">
-  <h1>Texas population by race, 1980–2020</h1>
-  <p class="dek">How the racial makeup of Texas has changed across five censuses. Hover or tap the chart to see each year.</p>
+  <h1>Texas population by race and ethnicity, 1980–2020</h1>
+  <p class="dek">How the racial and ethnic makeup of Texas has changed across five censuses. Hover or tap the chart to see each year.</p>
 
   <div class="controls">
     <div class="seg" role="group" aria-label="Measure">
@@ -91,7 +92,7 @@
   <ul class="legend" id="legend" aria-label="Show or hide groups"></ul>
 
   <div class="chart" id="chart">
-    <svg id="svg" tabindex="0" role="img" aria-label="Line chart of Texas population by race, 1980 to 2020. Use the left and right arrow keys to step through years."></svg>
+    <svg id="svg" tabindex="0" role="img" aria-label="Line chart of Texas population by race and ethnicity, 1980 to 2020. Use the left and right arrow keys to step through years."></svg>
     <div class="tip" id="tip" role="status" aria-live="polite"></div>
   </div>
 

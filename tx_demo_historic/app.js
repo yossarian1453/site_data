@@ -11,7 +11,6 @@
     // vertical markers for changes in how race was asked or coded
     breaks: [
       { year: 2000, label: "Two or more races first allowed" },
-      { year: 2020, label: "Race coding revised" },
     ],
   };
 

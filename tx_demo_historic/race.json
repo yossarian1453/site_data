@@ -17,94 +17,125 @@
   "series": [
     {
       "key": "white",
-      "label": "White",
+      "label": "White alone",
       "values": [
         {
           "year": 1980,
-          "count": 11198441,
-          "share": 78.7
+          "count": 9350297,
+          "share": 65.712
         },
         {
           "year": 1990,
-          "count": 12774762,
-          "share": 75.205
+          "count": 10291680,
+          "share": 60.587
         },
         {
           "year": 2000,
-          "count": 14799505,
-          "share": 70.975
+          "count": 10933313,
+          "share": 52.433
         },
         {
           "year": 2010,
-          "count": 17701552,
-          "share": 70.396
+          "count": 11397345,
+          "share": 45.325
         },
         {
           "year": 2020,
-          "count": 14609365,
-          "share": 50.126
+          "count": 11584597,
+          "share": 39.747
+        }
+      ]
+    },
+    {
+      "key": "hisp",
+      "label": "Hispanic or Latino (any race)",
+      "values": [
+        {
+          "year": 1980,
+          "count": 2985824,
+          "share": 20.984
+        },
+        {
+          "year": 1990,
+          "count": 4339905,
+          "share": 25.549
+        },
+        {
+          "year": 2000,
+          "count": 6669666,
+          "share": 31.986
+        },
+        {
+          "year": 2010,
+          "count": 9460921,
+          "share": 37.625
+        },
+        {
+          "year": 2020,
+          "count": 11441717,
+          "share": 39.257
         }
       ]
     },
     {
       "key": "black",
-      "label": "Black",
+      "label": "Black alone",
       "values": [
         {
           "year": 1980,
-          "count": 1710175,
-          "share": 12.019
+          "count": 1692542,
+          "share": 11.895
         },
         {
           "year": 1990,
-          "count": 2021632,
-          "share": 11.901
+          "count": 1976360,
+          "share": 11.635
         },
         {
           "year": 2000,
-          "count": 2404566,
-          "share": 11.532
+          "count": 2364255,
+          "share": 11.338
         },
         {
           "year": 2010,
-          "count": 2979598,
-          "share": 11.849
+          "count": 2886825,
+          "share": 11.48
         },
         {
           "year": 2020,
-          "count": 3552997,
-          "share": 12.191
+          "count": 3444712,
+          "share": 11.819
         }
       ]
     },
     {
-      "key": "other",
-      "label": "Some other race",
+      "key": "asian",
+      "label": "Asian & Pacific Islander alone",
       "values": [
         {
           "year": 1980,
-          "count": 1160187,
-          "share": 8.154
+          "count": 111658,
+          "share": 0.785
         },
         {
           "year": 1990,
-          "count": 1804780,
-          "share": 10.625
+          "count": 303825,
+          "share": 1.789
         },
         {
           "year": 2000,
-          "count": 2438001,
-          "share": 11.692
+          "count": 565202,
+          "share": 2.711
         },
         {
           "year": 2010,
-          "count": 2628186,
-          "share": 10.452
+          "count": 966346,
+          "share": 3.843
         },
         {
           "year": 2020,
-          "count": 3951366,
-          "share": 13.557
+          "count": 1589375,
+          "share": 5.453
         }
       ]
     },
@@ -124,97 +155,97 @@
         },
         {
           "year": 2000,
-          "count": 514633,
-          "share": 2.468
+          "count": 230567,
+          "share": 1.106
         },
         {
           "year": 2010,
-          "count": 679001,
-          "share": 2.7
+          "count": 319558,
+          "share": 1.271
         },
         {
           "year": 2020,
-          "count": 5133738,
-          "share": 17.614
+          "count": 886095,
+          "share": 3.04
         }
       ]
     },
     {
-      "key": "api",
-      "label": "Asian & Pacific Islander",
+      "key": "other",
+      "label": "Some other race alone",
       "values": [
         {
           "year": 1980,
-          "count": 120313,
-          "share": 0.846
+          "count": 51678,
+          "share": 0.363
         },
         {
           "year": 1990,
-          "count": 319459,
-          "share": 1.881
+          "count": 21937,
+          "share": 0.129
         },
         {
           "year": 2000,
-          "count": 576753,
-          "share": 2.766
+          "count": 19958,
+          "share": 0.096
         },
         {
           "year": 2010,
-          "count": 986252,
-          "share": 3.922
+          "count": 33980,
+          "share": 0.135
         },
         {
           "year": 2020,
-          "count": 1619091,
-          "share": 5.555
+          "count": 113584,
+          "share": 0.39
         }
       ]
     },
     {
       "key": "aian",
-      "label": "American Indian & Alaska Native",
+      "label": "Native American alone",
       "values": [
         {
           "year": 1980,
-          "count": 40075,
-          "share": 0.282
+          "count": 37192,
+          "share": 0.261
         },
         {
           "year": 1990,
-          "count": 65877,
-          "share": 0.388
+          "count": 52803,
+          "share": 0.311
         },
         {
           "year": 2000,
-          "count": 118362,
-          "share": 0.568
+          "count": 68859,
+          "share": 0.33
         },
         {
           "year": 2010,
-          "count": 170972,
-          "share": 0.68
+          "count": 80586,
+          "share": 0.32
         },
         {
           "year": 2020,
-          "count": 278948,
-          "share": 0.957
+          "count": 85425,
+          "share": 0.293
         }
       ]
     }
   ],
   "notes": [
-    "Race only; Hispanic origin is asked separately and people of Hispanic origin may be of any race.",
-    "From 2000, categories are for people reporting one race (\"alone\"); two or more races was first an option in 2000.",
+    "Hispanic or Latino includes people of any race; every other group is non-Hispanic.",
+    "From 2000, race groups are people reporting one race (\"alone\"); two or more races was first an option in 2000.",
     "Asian and Pacific Islander are combined for comparability with 1980 and 1990.",
-    "In 2020 the Census Bureau changed how write-in race responses were coded, shifting many people from White alone into Some other race and Two or more races."
+    "The 1980 census reported Hispanic American Indians and Hispanic Asians as one group; it is split between the two in proportion to each group's total before calculating non-Hispanic counts."
   ],
   "sources": [
     {
-      "label": "1980\u20131990: U.S. Census Bureau, Working Paper 56, Table 58",
-      "url": "https://www2.census.gov/library/working-papers/2002/demo/pop-twps0056/table58.pdf"
+      "label": "1980\u20131990: IPUMS NHGIS, Summary Tape File 1",
+      "url": "https://www.nhgis.org"
     },
     {
-      "label": "2000\u20132010: Census Summary File 1, table P3; 2020: Redistricting Data (P.L. 94-171), table P1",
+      "label": "2000\u20132010: Census Summary File 1; 2020: Redistricting Data (P.L. 94-171)",
       "url": "https://www.census.gov/data/developers/data-sets/decennial-census.html"
     }
   ]
