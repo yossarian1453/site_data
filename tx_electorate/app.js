@@ -110,25 +110,28 @@
         .attr("cx", v => x(v.stage)).attr("cy", v => y(v.share));
     }
 
-    // % labels: the higher labeled line gets its label above the dot, the lower one below
+    // % labels sit above each dot, unless another line runs through that spot; then they go below
     const labeled = visible.filter(s => CONFIG.labeled.includes(s.key));
+    const ROOM = 38;   // px a label needs above or below its dot
     for (const st of stages) {
-      const pts = labeled.map(s => ({ s, v: point(s, st.key) })).sort((a, b) => b.v.share - a.v.share);
-      pts.forEach(({ s, v }, i) => {
-        const above = i === 0;
+      const ys = visible.map(s => y(point(s, st.key).share));
+      for (const s of labeled) {
+        const py = y(point(s, st.key).share);
+        const blocked = dir => ys.some(o => o !== py && (dir < 0 ? o < py && py - o < ROOM : o > py && o - py < ROOM));
+        const above = !blocked(-1) || blocked(1);
         g.append("text").attr("class", "lbl").attr("fill", color(s.key)).attr("text-anchor", "middle")
-          .attr("x", x(st.key)).attr("y", y(v.share) + (above ? -11 : 19)).text(`${fmt1(v.share)}%`);
-      });
+          .attr("x", x(st.key)).attr("y", py + (above ? -11 : 20)).text(`${fmt1(point(s, st.key).share)}%`);
+      }
     }
 
-    // group names at the right end (wide screens only; the legend covers narrow ones)
+    // group names at the right end, all in one column (wide screens only; the legend covers narrow ones)
     if (!narrow) {
       const last = stages[stages.length - 1].key;
       const ends = visible.map(s => ({ s, y: y(point(s, last).share) })).sort((a, b) => a.y - b.y);
-      for (let i = 1; i < ends.length; i++) ends[i].y = Math.max(ends[i].y, ends[i - 1].y + 15);   // nudge apart
+      for (let i = 1; i < ends.length; i++) ends[i].y = Math.max(ends[i].y, ends[i - 1].y + 16);   // nudge apart
       for (const { s, y: yy } of ends)
         g.append("text").attr("class", "end-lbl").attr("fill", color(s.key))
-          .attr("x", x(last) + 14 + (CONFIG.labeled.includes(s.key) ? 30 : 0)).attr("y", yy + 4).text(s.label);
+          .attr("x", x(last) + 30).attr("y", yy + 4).text(s.label);
     }
 
     // hover layer: snaps to the nearest stage
