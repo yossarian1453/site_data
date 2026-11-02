@@ -1,0 +1,117 @@
+{
+  "state": "Texas",
+  "year": 2024,
+  "stages": [
+    {
+      "key": "adults",
+      "label": "Adults (18+)"
+    },
+    {
+      "key": "citizens",
+      "label": "Adult citizens"
+    },
+    {
+      "key": "registered",
+      "label": "Registered"
+    },
+    {
+      "key": "voted",
+      "label": "Voted"
+    }
+  ],
+  "totals": {
+    "adults": 23139000,
+    "citizens": 19754000,
+    "registered": 13641000,
+    "voted": 11442000
+  },
+  "series": [
+    {
+      "key": "hisp",
+      "label": "Latino",
+      "values": [
+        {
+          "stage": "adults",
+          "count": 8420000,
+          "share": 36.4
+        },
+        {
+          "stage": "citizens",
+          "count": 5976000,
+          "share": 30.3
+        },
+        {
+          "stage": "registered",
+          "count": 3473000,
+          "share": 25.5
+        },
+        {
+          "stage": "voted",
+          "count": 2657000,
+          "share": 23.2
+        }
+      ]
+    },
+    {
+      "key": "white",
+      "label": "White",
+      "values": [
+        {
+          "stage": "adults",
+          "count": 9898000,
+          "share": 42.8
+        },
+        {
+          "stage": "citizens",
+          "count": 9744000,
+          "share": 49.3
+        },
+        {
+          "stage": "registered",
+          "count": 7382000,
+          "share": 54.1
+        },
+        {
+          "stage": "voted",
+          "count": 6489000,
+          "share": 56.7
+        }
+      ]
+    },
+    {
+      "key": "rest",
+      "label": "Everyone else",
+      "values": [
+        {
+          "stage": "adults",
+          "count": 4821000,
+          "share": 20.8
+        },
+        {
+          "stage": "citizens",
+          "count": 4034000,
+          "share": 20.4
+        },
+        {
+          "stage": "registered",
+          "count": 2786000,
+          "share": 20.4
+        },
+        {
+          "stage": "voted",
+          "count": 2296000,
+          "share": 20.1
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "Adults are Texans ages 18 and older.",
+    "Latino includes Hispanic Texans of any race; White means non-Hispanic White alone; everyone else includes Black, Asian and other non-Hispanic Texans.",
+    "Registration and voting are self-reported in the survey, which tends to overstate turnout, and survey estimates for individual states have margins of error."
+  ],
+  "source": {
+    "label": "U.S. Census Bureau, Current Population Survey, November 2024 Voting and Registration Supplement, Table 4b",
+    "url": "https://www.census.gov/data/tables/time-series/demo/voting-and-registration/p20-590.html"
+  }
+}

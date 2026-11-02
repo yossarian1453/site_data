@@ -1,0 +1,13 @@
+group,stage,count,share
+Latino,adults,8420000,36.4
+Latino,citizens,5976000,30.3
+Latino,registered,3473000,25.5
+Latino,voted,2657000,23.2
+White,adults,9898000,42.8
+White,citizens,9744000,49.3
+White,registered,7382000,54.1
+White,voted,6489000,56.7
+Everyone else,adults,4821000,20.8
+Everyone else,citizens,4034000,20.4
+Everyone else,registered,2786000,20.4
+Everyone else,voted,2296000,20.1
