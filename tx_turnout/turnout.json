@@ -1,0 +1,210 @@
+{
+  "state": "Texas",
+  "years": [
+    2012,
+    2014,
+    2016,
+    2018,
+    2020,
+    2022,
+    2024
+  ],
+  "presidential": [
+    2012,
+    2016,
+    2020,
+    2024
+  ],
+  "series": [
+    {
+      "key": "hisp",
+      "label": "Latino",
+      "values": [
+        {
+          "year": 2012,
+          "turnout": 38.8,
+          "voted": 1890309,
+          "citizens": 4866616
+        },
+        {
+          "year": 2014,
+          "turnout": 22.4,
+          "voted": 1092231,
+          "citizens": 4877961
+        },
+        {
+          "year": 2016,
+          "turnout": 40.5,
+          "voted": 1938459,
+          "citizens": 4781180
+        },
+        {
+          "year": 2018,
+          "turnout": 34.3,
+          "voted": 1917837,
+          "citizens": 5594135
+        },
+        {
+          "year": 2020,
+          "turnout": 53.1,
+          "voted": 2971910,
+          "citizens": 5599308
+        },
+        {
+          "year": 2022,
+          "turnout": 36.9,
+          "voted": 2091286,
+          "citizens": 5672489
+        },
+        {
+          "year": 2024,
+          "turnout": 44.5,
+          "voted": 2656766,
+          "citizens": 5976097
+        }
+      ]
+    },
+    {
+      "key": "white",
+      "label": "White",
+      "values": [
+        {
+          "year": 2012,
+          "turnout": 60.9,
+          "voted": 5087327,
+          "citizens": 8359716
+        },
+        {
+          "year": 2014,
+          "turnout": 41.8,
+          "voted": 3775887,
+          "citizens": 9033297
+        },
+        {
+          "year": 2016,
+          "turnout": 62.9,
+          "voted": 5904936,
+          "citizens": 9383375
+        },
+        {
+          "year": 2018,
+          "turnout": 57.7,
+          "voted": 5393779,
+          "citizens": 9345228
+        },
+        {
+          "year": 2020,
+          "turnout": 72.0,
+          "voted": 6785197,
+          "citizens": 9422533
+        },
+        {
+          "year": 2022,
+          "turnout": 54.8,
+          "voted": 5306942,
+          "citizens": 9689427
+        },
+        {
+          "year": 2024,
+          "turnout": 66.6,
+          "voted": 6489389,
+          "citizens": 9744147
+        }
+      ]
+    },
+    {
+      "key": "rest",
+      "label": "Everyone else",
+      "values": [
+        {
+          "year": 2012,
+          "turnout": 58.7,
+          "voted": 1665693,
+          "citizens": 2836105
+        },
+        {
+          "year": 2014,
+          "turnout": 33.0,
+          "voted": 967698,
+          "citizens": 2932255
+        },
+        {
+          "year": 2016,
+          "turnout": 55.5,
+          "voted": 1782820,
+          "citizens": 3212997
+        },
+        {
+          "year": 2018,
+          "turnout": 45.8,
+          "voted": 1573990,
+          "citizens": 3434843
+        },
+        {
+          "year": 2020,
+          "turnout": 59.5,
+          "voted": 2117361,
+          "citizens": 3559279
+        },
+        {
+          "year": 2022,
+          "turnout": 41.9,
+          "voted": 1536792,
+          "citizens": 3666925
+        },
+        {
+          "year": 2024,
+          "turnout": 56.9,
+          "voted": 2295412,
+          "citizens": 4033809
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "2012": {
+      "turnout": 53.8,
+      "voted": 8643328,
+      "citizens": 16062438
+    },
+    "2014": {
+      "turnout": 34.6,
+      "voted": 5835817,
+      "citizens": 16843513
+    },
+    "2016": {
+      "turnout": 55.4,
+      "voted": 9626215,
+      "citizens": 17377552
+    },
+    "2018": {
+      "turnout": 48.4,
+      "voted": 8885606,
+      "citizens": 18374207
+    },
+    "2020": {
+      "turnout": 63.9,
+      "voted": 11874469,
+      "citizens": 18581121
+    },
+    "2022": {
+      "turnout": 47.0,
+      "voted": 8935019,
+      "citizens": 19028841
+    },
+    "2024": {
+      "turnout": 57.9,
+      "voted": 11441567,
+      "citizens": 19754054
+    }
+  },
+  "notes": [
+    "Turnout is the share of adult citizens who said they voted.",
+    "Latino includes Hispanic Texans of any race; White means non-Hispanic White alone; everyone else includes Black, Asian and other non-Hispanic Texans.",
+    "Turnout is self-reported in the survey, which tends to overstate it, and state-level estimates for each group have margins of error of a few points."
+  ],
+  "source": {
+    "label": "U.S. Census Bureau, Current Population Survey Voting and Registration Supplement, 2012\u20132024",
+    "url": "https://www.census.gov/data/developers/data-sets/census-microdata-api/cps/voting.html"
+  }
+}
