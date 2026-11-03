@@ -1,13 +1,5 @@
-side,group,supporting,opposing,total
-Pro-Talarico,Texans for a Conservative Majority,0,24960684,24960684
-Pro-Talarico,Lone Star Rising PAC,3980262,90910,4071172
-Pro-Talarico,Texans Demanding Accountability,0,1853481,1853481
-Pro-Talarico,"Field Team 6, INC.",102470,0,102470
-Pro-Talarico,Progressive Turnout Project,94314,0,94314
-Pro-Talarico,Latino Victory Fund,82500,0,82500
-Pro-Paxton,Lone Star Liberty PAC,770071,200000,970071
-Pro-Paxton,American Political Action Committee,0,533069,533069
-Pro-Paxton,Forward Texas,0,505024,505024
-Pro-Paxton,Fellowship PAC,500000,0,500000
-Pro-Paxton,Senate Conservatives Fund,80516,0,80516
-Pro-Paxton,Senate Conservatives Action,48306,0,48306
+side,group,committee_id,raised,spent,through
+Pro-Talarico,Lone Star Rising PAC,C00918268,43017580,30308134,2026-10-14
+Pro-Talarico,Moment of Truth PAC INC.,C00947762,1819725,1806756,2026-10-14
+Pro-Paxton,Texas PAC,C00960211,158000000,148781460,2026-10-14
+Pro-Paxton,Lone Star Liberty PAC,C00901223,29696322,28578700,2026-10-14

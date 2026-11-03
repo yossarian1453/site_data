@@ -1,4 +1,4 @@
-/* Outside spending in the Texas Senate race: pro-Talarico vs. pro-Paxton bars + top spenders.
+/* Super PAC money in the Texas Senate race: pro-Talarico vs. pro-Paxton money raised.
  * Reads outside.json (written by scripts/fec_senate.py) from the same folder. No libraries needed.
  */
 (() => {
@@ -6,7 +6,7 @@
 
   const CONFIG = {
     dataFile: "outside.json",
-    version: "1",                          // bump after re-running fec_senate.py
+    version: "2",                          // bump after re-running fec_senate.py
     heightMessage: "site-data:height",
   };
 
@@ -14,7 +14,7 @@
   const money = n => n >= 1e6 ? `$${(n / 1e6).toFixed(1)}M` : `$${Math.round(n / 1000).toLocaleString("en-US")}K`;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-  const date = iso => new Date(`${iso}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  const date = iso => iso ? new Date(`${iso}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—";
 
   async function init() {
     let data;
@@ -29,29 +29,26 @@
       return;
     }
 
-    const max = Math.max(...data.sides.map(s => s.total), 1);
+    const max = Math.max(...data.sides.map(s => s.raised), 1);
     $("#bars").innerHTML = data.sides.map(s => {
-      const c = css(`--s-${s.key}`), c2 = css(`--s-${s.key}-2`);
-      const segs = s.segments.filter(x => x.total > 0);
-      return `<div class="bar-row" style="--c:${c};--c2:${c2}">
-        <div class="bar-head"><b>${s.label}</b><span>${money(s.total)}</span></div>
-        <div class="track" role="img" aria-label="${s.label}: ${money(s.total)}, ${segs.map(x => `${x.label} ${money(x.total)}`).join(", ")}">
-          ${segs.map(x => `<div class="seg-bar ${x.kind}" style="width:${(100 * x.total / max).toFixed(2)}%"></div>`).join("")}
+      const c = css(`--s-${s.key}`);
+      return `<div class="bar-row" style="--c:${c}">
+        <div class="bar-head"><b>${s.label} super PACs</b><span>${money(s.raised)}</span></div>
+        <div class="track" role="img" aria-label="${s.label} super PACs raised ${money(s.raised)}">
+          <div class="seg-bar support" style="width:${(100 * s.raised / max).toFixed(2)}%"></div>
         </div>
-        <div class="bar-sub">${s.segments.map(x =>
-          `<span><i style="background:${x.kind === "support" ? c : c2}"></i>${x.label}: ${money(x.total)}</span>`).join("")}</div>
       </div>`;
     }).join("");
 
     $("#top").innerHTML = data.sides.map(s => `
       <div style="--c:${css(`--s-${s.key}`)}">
-        <h2>Biggest ${s.label.replace(/^Pro-/, "pro-")} spenders</h2>
-        <ol>${s.top.map(g => `<li><span>${esc(g.name)}</span><span>${money(g.total)}</span></li>`).join("")}</ol>
-        ${s.n_groups > s.top.length ? `<div class="more">${s.n_groups - s.top.length} more groups not shown</div>` : ""}
+        <h2>Backing ${esc(s.candidate)}</h2>
+        <ol>${s.groups.map(g => `<li><span>${esc(g.name)}<span class="thru"> · through ${date(g.through)}</span></span>` +
+          `<span>${money(g.raised)}</span></li>`).join("")}</ol>
       </div>`).join("");
 
     $("#notes").innerHTML = `<p><b>Notes.</b> ${data.notes.join(" ")}</p>` +
-      `<p>Source: <a href="${data.source.url}" target="_blank" rel="noopener">${data.source.label}</a>, independent expenditures, retrieved ${date(data.pulled)}.</p>`;
+      `<p>Source: <a href="${data.source.url}" target="_blank" rel="noopener">${data.source.label}</a>, retrieved ${date(data.pulled)}.</p>`;
 
     new ResizeObserver(postHeight).observe($("#app"));
     postHeight();
