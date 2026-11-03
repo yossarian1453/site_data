@@ -6,50 +6,122 @@
       "key": "dem",
       "label": "Pro-Talarico",
       "candidate": "Talarico",
-      "raised": 44837305,
-      "groups": [
+      "total": 108605746,
+      "latest": "2026-11-01",
+      "segments": [
         {
-          "name": "Lone Star Rising PAC",
-          "committee_id": "C00918268",
-          "raised": 43017580,
-          "spent": 30308134,
-          "through": "2026-10-14"
+          "kind": "support",
+          "label": "Supporting Talarico",
+          "total": 34836566
         },
         {
-          "name": "Moment of Truth PAC INC.",
-          "committee_id": "C00947762",
-          "raised": 1819725,
-          "spent": 1806756,
-          "through": "2026-10-14"
+          "kind": "oppose",
+          "label": "Opposing Paxton",
+          "total": 73769181
         }
-      ]
+      ],
+      "top": [
+        {
+          "name": "Lone Star Rising PAC",
+          "total": 35757445,
+          "support": 4509404,
+          "oppose": 31248041
+        },
+        {
+          "name": "Texas Forever",
+          "total": 27461162,
+          "support": 8032877,
+          "oppose": 19428285
+        },
+        {
+          "name": "Lower Costs Now",
+          "total": 18428442,
+          "support": 6702886,
+          "oppose": 11725556
+        },
+        {
+          "name": "Ab PAC",
+          "total": 4170578,
+          "support": 4170578,
+          "oppose": 0
+        },
+        {
+          "name": "Cffe PAC",
+          "total": 3768104,
+          "support": 2758830,
+          "oppose": 1009274
+        },
+        {
+          "name": "LCV Victory Fund",
+          "total": 3017031,
+          "support": 1100,
+          "oppose": 3015932
+        }
+      ],
+      "n_groups": 61
     },
     {
       "key": "rep",
       "label": "Pro-Paxton",
       "candidate": "Paxton",
-      "raised": 187696322,
-      "groups": [
+      "total": 315162319,
+      "latest": "2026-10-31",
+      "segments": [
+        {
+          "kind": "support",
+          "label": "Supporting Paxton",
+          "total": 94220750
+        },
+        {
+          "kind": "oppose",
+          "label": "Opposing Talarico",
+          "total": 220941568
+        }
+      ],
+      "top": [
         {
           "name": "Texas PAC",
-          "committee_id": "C00960211",
-          "raised": 158000000,
-          "spent": 148781460,
-          "through": "2026-10-14"
+          "total": 181850225,
+          "support": 69696483,
+          "oppose": 112153742
+        },
+        {
+          "name": "America PAC",
+          "total": 47264556,
+          "support": 5892529,
+          "oppose": 41372027
+        },
+        {
+          "name": "MAGA INC",
+          "total": 37650491,
+          "support": 7532500,
+          "oppose": 30117991
         },
         {
           "name": "Lone Star Liberty PAC",
-          "committee_id": "C00901223",
-          "raised": 29696322,
-          "spent": 28578700,
-          "through": "2026-10-14"
+          "total": 19874795,
+          "support": 3586620,
+          "oppose": 16288175
+        },
+        {
+          "name": "Defend US PAC",
+          "total": 13103839,
+          "support": 2620768,
+          "oppose": 10483071
+        },
+        {
+          "name": "No Going Back PAC INC",
+          "total": 5615931,
+          "support": 2807965,
+          "oppose": 2807965
         }
-      ]
+      ],
+      "n_groups": 26
     }
   ],
   "notes": [
-    "Money raised by super PACs set up to back each candidate in this race, through each group's latest FEC report.",
-    "National groups that also spend in Texas, such as Senate Leadership Fund and America PAC, aren't included, because their fundraising covers many races. Texas PAC is largely funded by transfers from Senate Leadership Fund."
+    "Independent expenditures are ads and other spending by groups that aren't coordinated with a campaign. Spending against one candidate is counted on the other candidate's side.",
+    "General election only (after the May 26 primary runoff), including 24- and 48-hour reports. Party coordinated spending and ads by groups that don't report to the FEC aren't included."
   ],
   "source": {
     "label": "Federal Election Commission",

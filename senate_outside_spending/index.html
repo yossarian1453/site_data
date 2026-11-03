@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Senate Super PAC Money</title>
+<title>Senate Outside Spending</title>
 <style>
   :root {
     color-scheme: light;
@@ -95,20 +95,20 @@
   .top li { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--rule); }
   .top li > span:first-child { color: var(--ink); }
   .top li > span:last-child { font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
-  .top .thru { color: var(--ink-3); font-size: 0.75rem; }
+  .top .more { font-size: 0.75rem; color: var(--ink-3); margin-top: 4px; }
   @media (max-width: 560px) { .top { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 <main class="wrap" id="app">
-  <h1>Super PAC money in the Texas Senate race</h1>
-  <p class="dek">Money raised by the super PACs set up to back each candidate.</p>
+  <h1>Outside spending in the Texas Senate race</h1>
+  <p class="dek">General-election spending by super PACs and other outside groups, sorted by which candidate it helps.</p>
 
   <div class="bars" id="bars"></div>
   <div class="top" id="top"></div>
   <footer id="notes"></footer>
 </main>
 
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 </body>
 </html>
