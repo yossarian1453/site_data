@@ -1,0 +1,126 @@
+{
+  "race": "2026 U.S. Senate, Texas",
+  "pulled": "2026-11-03",
+  "sides": [
+    {
+      "key": "dem",
+      "label": "Pro-Talarico",
+      "total": 31328132,
+      "segments": [
+        {
+          "kind": "support",
+          "label": "Supporting Talarico",
+          "total": 4397036
+        },
+        {
+          "kind": "oppose",
+          "label": "Opposing Paxton",
+          "total": 26931096
+        }
+      ],
+      "top": [
+        {
+          "name": "Texans for a Conservative Majority",
+          "total": 24960684,
+          "support": 0,
+          "oppose": 24960684
+        },
+        {
+          "name": "Lone Star Rising PAC",
+          "total": 4071172,
+          "support": 3980262,
+          "oppose": 90910
+        },
+        {
+          "name": "Texans Demanding Accountability",
+          "total": 1853481,
+          "support": 0,
+          "oppose": 1853481
+        },
+        {
+          "name": "Field Team 6, INC.",
+          "total": 102470,
+          "support": 102470,
+          "oppose": 0
+        },
+        {
+          "name": "Progressive Turnout Project",
+          "total": 94314,
+          "support": 94314,
+          "oppose": 0
+        },
+        {
+          "name": "Latino Victory Fund",
+          "total": 82500,
+          "support": 82500,
+          "oppose": 0
+        }
+      ],
+      "n_groups": 17
+    },
+    {
+      "key": "rep",
+      "label": "Pro-Paxton",
+      "total": 2708171,
+      "segments": [
+        {
+          "kind": "support",
+          "label": "Supporting Paxton",
+          "total": 1427092
+        },
+        {
+          "kind": "oppose",
+          "label": "Opposing Talarico",
+          "total": 1281079
+        }
+      ],
+      "top": [
+        {
+          "name": "Lone Star Liberty PAC",
+          "total": 970071,
+          "support": 770071,
+          "oppose": 200000
+        },
+        {
+          "name": "American Political Action Committee",
+          "total": 533069,
+          "support": 0,
+          "oppose": 533069
+        },
+        {
+          "name": "Forward Texas",
+          "total": 505024,
+          "support": 0,
+          "oppose": 505024
+        },
+        {
+          "name": "Fellowship PAC",
+          "total": 500000,
+          "support": 500000,
+          "oppose": 0
+        },
+        {
+          "name": "Senate Conservatives Fund",
+          "total": 80516,
+          "support": 80516,
+          "oppose": 0
+        },
+        {
+          "name": "Senate Conservatives Action",
+          "total": 48306,
+          "support": 48306,
+          "oppose": 0
+        }
+      ],
+      "n_groups": 15
+    }
+  ],
+  "notes": [
+    "Independent expenditures are ads and other spending by groups that aren't coordinated with a campaign. Spending against one candidate is counted on the other candidate's side.",
+    "Includes filings the FEC has processed, which can lag the most recent 24-hour reports by days. Party coordinated spending and undisclosed issue ads aren't included."
+  ],
+  "source": {
+    "label": "Federal Election Commission",
+    "url": "https://www.fec.gov/data/"
+  }
+}
