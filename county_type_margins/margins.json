@@ -1,0 +1,365 @@
+{
+  "types": [
+    {
+      "key": "big6",
+      "label": "Big 6",
+      "counties": 6
+    },
+    {
+      "key": "suburban",
+      "label": "Suburban",
+      "counties": 29
+    },
+    {
+      "key": "othermetro",
+      "label": "Other Metro",
+      "counties": 21
+    },
+    {
+      "key": "smalltown",
+      "label": "Small Town",
+      "counties": 198
+    }
+  ],
+  "races": [
+    {
+      "key": "president_2012",
+      "kind": "pres",
+      "label": "2012 President",
+      "year": 2012,
+      "dem": "Obama",
+      "rep": "Romney",
+      "statewide": {
+        "margin": -15.77,
+        "votes": 7997303,
+        "swing": null
+      },
+      "types": {
+        "big6": {
+          "margin": 5.21,
+          "votes": 3584062,
+          "share": 44.82,
+          "dem": 1856282,
+          "gop": 1669725,
+          "swing": null
+        },
+        "suburban": {
+          "margin": -34.42,
+          "votes": 1933606,
+          "share": 24.18,
+          "dem": 618177,
+          "gop": 1283712,
+          "swing": null
+        },
+        "othermetro": {
+          "margin": -18.51,
+          "votes": 1259245,
+          "share": 15.75,
+          "dem": 504695,
+          "gop": 737752,
+          "swing": null
+        },
+        "smalltown": {
+          "margin": -45.0,
+          "votes": 1220390,
+          "share": 15.26,
+          "dem": 328455,
+          "gop": 877599,
+          "swing": null
+        }
+      }
+    },
+    {
+      "key": "governor_2014",
+      "kind": "mid",
+      "label": "2014 Governor",
+      "year": 2014,
+      "dem": "Davis",
+      "rep": "Abbott",
+      "statewide": {
+        "margin": -20.36,
+        "votes": 4717904,
+        "swing": null
+      },
+      "types": {
+        "big6": {
+          "margin": 2.27,
+          "votes": 2109423,
+          "share": 44.71,
+          "dem": 1059868,
+          "gop": 1011983,
+          "swing": null
+        },
+        "suburban": {
+          "margin": -36.11,
+          "votes": 1173397,
+          "share": 24.87,
+          "dem": 363348,
+          "gop": 787070,
+          "swing": null
+        },
+        "othermetro": {
+          "margin": -28.71,
+          "votes": 701005,
+          "share": 14.86,
+          "dem": 243521,
+          "gop": 444761,
+          "swing": null
+        },
+        "smalltown": {
+          "margin": -52.27,
+          "votes": 734079,
+          "share": 15.56,
+          "dem": 168721,
+          "gop": 552437,
+          "swing": null
+        }
+      }
+    },
+    {
+      "key": "president_2016",
+      "kind": "pres",
+      "label": "2016 President",
+      "year": 2016,
+      "dem": "Clinton",
+      "rep": "Trump",
+      "statewide": {
+        "margin": -8.98,
+        "votes": 8981860,
+        "swing": 6.79
+      },
+      "types": {
+        "big6": {
+          "margin": 16.32,
+          "votes": 4014006,
+          "share": 44.69,
+          "dem": 2233039,
+          "gop": 1577875,
+          "swing": 11.11
+        },
+        "suburban": {
+          "margin": -26.14,
+          "votes": 2290739,
+          "share": 25.5,
+          "dem": 787242,
+          "gop": 1385939,
+          "swing": 8.28
+        },
+        "othermetro": {
+          "margin": -15.68,
+          "votes": 1387567,
+          "share": 15.45,
+          "dem": 554384,
+          "gop": 771959,
+          "swing": 2.83
+        },
+        "smalltown": {
+          "margin": -50.06,
+          "votes": 1289548,
+          "share": 14.36,
+          "dem": 302961,
+          "gop": 948515,
+          "swing": -5.06
+        }
+      }
+    },
+    {
+      "key": "us_senate_2018",
+      "kind": "mid",
+      "label": "2018 Senate",
+      "year": 2018,
+      "dem": "O'Rourke",
+      "rep": "Cruz",
+      "statewide": {
+        "margin": -2.58,
+        "votes": 8369175,
+        "swing": 17.78
+      },
+      "types": {
+        "big6": {
+          "margin": 23.58,
+          "votes": 3799698,
+          "share": 45.4,
+          "dem": 2332467,
+          "gop": 1436642,
+          "swing": 21.31
+        },
+        "suburban": {
+          "margin": -17.41,
+          "votes": 2209303,
+          "share": 26.4,
+          "dem": 903068,
+          "gop": 1287749,
+          "swing": 18.7
+        },
+        "othermetro": {
+          "margin": -13.68,
+          "votes": 1232177,
+          "share": 14.72,
+          "dem": 527300,
+          "gop": 695806,
+          "swing": 15.03
+        },
+        "smalltown": {
+          "margin": -49.49,
+          "votes": 1127997,
+          "share": 13.48,
+          "dem": 281238,
+          "gop": 839433,
+          "swing": 2.78
+        }
+      }
+    },
+    {
+      "key": "president_2020",
+      "kind": "pres",
+      "label": "2020 President",
+      "year": 2020,
+      "dem": "Biden",
+      "rep": "Trump",
+      "statewide": {
+        "margin": -5.58,
+        "votes": 11317052,
+        "swing": 3.4
+      },
+      "types": {
+        "big6": {
+          "margin": 20.22,
+          "votes": 5040608,
+          "share": 44.54,
+          "dem": 2990774,
+          "gop": 1971733,
+          "swing": 3.9
+        },
+        "suburban": {
+          "margin": -17.73,
+          "votes": 3087066,
+          "share": 27.28,
+          "dem": 1244740,
+          "gop": 1792044,
+          "swing": 8.41
+        },
+        "othermetro": {
+          "margin": -18.21,
+          "votes": 1685371,
+          "share": 14.89,
+          "dem": 676512,
+          "gop": 983431,
+          "swing": -2.53
+        },
+        "smalltown": {
+          "margin": -52.95,
+          "votes": 1504007,
+          "share": 13.29,
+          "dem": 345487,
+          "gop": 1141814,
+          "swing": -2.89
+        }
+      }
+    },
+    {
+      "key": "governor_2022",
+      "kind": "mid",
+      "label": "2022 Governor",
+      "year": 2022,
+      "dem": "O'Rourke",
+      "rep": "Abbott",
+      "statewide": {
+        "margin": -10.88,
+        "votes": 8106768,
+        "swing": -8.3
+      },
+      "types": {
+        "big6": {
+          "margin": 17.26,
+          "votes": 3488877,
+          "share": 43.04,
+          "dem": 2019699,
+          "gop": 1417688,
+          "swing": -6.32
+        },
+        "suburban": {
+          "margin": -22.19,
+          "votes": 2334446,
+          "share": 28.8,
+          "dem": 891342,
+          "gop": 1409294,
+          "swing": -4.78
+        },
+        "othermetro": {
+          "margin": -25.53,
+          "votes": 1163855,
+          "share": 14.36,
+          "dem": 425164,
+          "gop": 722300,
+          "swing": -11.85
+        },
+        "smalltown": {
+          "margin": -59.78,
+          "votes": 1119590,
+          "share": 13.81,
+          "dem": 218567,
+          "gop": 887815,
+          "swing": -10.29
+        }
+      }
+    },
+    {
+      "key": "president_2024",
+      "kind": "pres",
+      "label": "2024 President",
+      "year": 2024,
+      "dem": "Harris",
+      "rep": "Trump",
+      "statewide": {
+        "margin": -13.66,
+        "votes": 11404528,
+        "swing": -8.08
+      },
+      "types": {
+        "big6": {
+          "margin": 11.85,
+          "votes": 4830116,
+          "share": 42.35,
+          "dem": 2657812,
+          "gop": 2085239,
+          "swing": -8.37
+        },
+        "suburban": {
+          "margin": -22.57,
+          "votes": 3352489,
+          "share": 29.4,
+          "dem": 1268221,
+          "gop": 2024920,
+          "swing": -4.84
+        },
+        "othermetro": {
+          "margin": -28.22,
+          "votes": 1690490,
+          "share": 14.82,
+          "dem": 597578,
+          "gop": 1074653,
+          "swing": -10.01
+        },
+        "smalltown": {
+          "margin": -58.58,
+          "votes": 1531433,
+          "share": 13.43,
+          "dem": 311523,
+          "gop": 1208591,
+          "swing": -5.63
+        }
+      }
+    }
+  ],
+  "source": {
+    "label": "Texas Legislative Council precinct election data",
+    "url": "https://data.capitol.texas.gov/"
+  },
+  "category_note": "County types follow Wayne Thorburn, Red State (University of Texas Press, 2014), ch. 2.",
+  "notes": [
+    "Margin is the Democratic candidate's share of all votes minus the Republican's.",
+    "Swing is the change in margin from the previous race of the same kind.",
+    "Midterm races are the top statewide race each year: governor in 2014 and 2022, U.S. Senate in 2018."
+  ]
+}
