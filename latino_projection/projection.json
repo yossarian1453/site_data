@@ -1,0 +1,77 @@
+{
+  "registered_base": 3473427,
+  "base_year": 2024,
+  "pres2024": {
+    "label": "Edison Research exit poll",
+    "voters": 2656766,
+    "turnout": 76.5,
+    "dem": {
+      "name": "Harris",
+      "pct": 45.0,
+      "votes": 1195545
+    },
+    "rep": {
+      "name": "Trump",
+      "pct": 55.0,
+      "votes": 1461221
+    },
+    "net": -265677
+  },
+  "polls": [
+    {
+      "key": "nuni_oct",
+      "label": "N+ Univision/YouGov, Oct. 13\u201321",
+      "url": "https://corporate.televisaunivision.com/press/2026/10/27/n-univision-poll-finds-texas-races-close-while-hispanic-voters-favor-democrats-in-governor-senate-and-house-contests/",
+      "population": "Texas Latino registered voters",
+      "n": 980,
+      "moe": 3.7,
+      "dem": {
+        "name": "Talarico",
+        "pct": 55.0
+      },
+      "rep": {
+        "name": "Paxton",
+        "pct": 37.0
+      },
+      "rows": [
+        {
+          "scenario": "2018 turnout",
+          "turnout": 67.4,
+          "voters": 2342775,
+          "dem": 1288526,
+          "rep": 866827,
+          "net": 421699,
+          "swing": 687376
+        },
+        {
+          "scenario": "2022 turnout",
+          "turnout": 63.4,
+          "voters": 2201103,
+          "dem": 1210607,
+          "rep": 814408,
+          "net": 396199,
+          "swing": 661875
+        },
+        {
+          "scenario": "2018\u201322 average",
+          "turnout": 65.4,
+          "voters": 2271939,
+          "dem": 1249566,
+          "rep": 840617,
+          "net": 408949,
+          "swing": 674626
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "Turnout is self-reported in the Census Bureau's voting survey, which tends to overstate it.",
+    "The 2026 pool of Latino registered voters is assumed to match 2024's.",
+    "Net votes use the poll's margin; undecided and third-party voters are left out, as if they split evenly or stay home.",
+    "This is arithmetic on poll results, not a forecast, and polls overstated Democrats with Texas Latinos in 2020 and 2024."
+  ],
+  "source": {
+    "label": "U.S. Census Bureau, Current Population Survey Voting and Registration Supplement",
+    "url": "https://www.census.gov/data/developers/data-sets/census-microdata-api/cps/voting.html"
+  }
+}
